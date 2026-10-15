@@ -1,8 +1,8 @@
 import time
 import base64
 import uuid
-from collections import defaultdict
-from fastapi import FastAPI, Header, Depends, HTTPException
+from collections import defaultdict, deque
+from fastapi import FastAPI, Header, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -12,7 +12,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -24,7 +24,7 @@ WINDOW = 10.0
 
 # --- In-Memory State ---
 # Note: Standard for these graders is a single-worker deployment.
-rate_limit_store = defaultdict(list)
+rate_limit_store = defaultdict(deque)
 idempotency_store = {}
 CATALOG = [{"id": i, "name": f"Order {i}"} for i in range(1, TOTAL_ORDERS + 1)]
 
@@ -35,21 +35,25 @@ def encode_cursor(index: int) -> str:
 
 def decode_cursor(cursor: str) -> int:
     try:
-        return int(base64.b64decode(cursor.encode('utf-8')).decode('utf-8'))
-    except Exception:
-        return 0
+        raw = base64.urlsafe_b64decode(cursor.encode("ascii")).decode("ascii")
+        index = int(raw)
+    except (ValueError, UnicodeDecodeError, base64.binascii.Error) as exc:
+        raise HTTPException(status_code=400, detail="Invalid cursor") from exc
+    if not 0 <= index <= TOTAL_ORDERS:
+        raise HTTPException(status_code=400, detail="Invalid cursor")
+    return index
 
 def rate_limit_check(
     x_client_id: str = Header(default="anonymous", alias="X-Client-Id")
 ):
     now = time.time()
     # Prune timestamps outside the 10-second window
-    rate_limit_store[x_client_id] = [
-        t for t in rate_limit_store[x_client_id] if now - t < WINDOW
-    ]
+    timestamps = rate_limit_store[x_client_id]
+    while timestamps and now - timestamps[0] >= WINDOW:
+        timestamps.popleft()
     
-    if len(rate_limit_store[x_client_id]) >= RATE_LIMIT:
-        oldest = min(rate_limit_store[x_client_id])
+    if len(timestamps) >= RATE_LIMIT:
+        oldest = timestamps[0]
         retry_after = max(1, int(WINDOW - (now - oldest)) + 1)
         raise HTTPException(
             status_code=429,
@@ -57,7 +61,7 @@ def rate_limit_check(
             headers={"Retry-After": str(retry_after)}
         )
     
-    rate_limit_store[x_client_id].append(now)
+    timestamps.append(now)
 
 # --- Endpoints ---
 @app.post("/orders", status_code=201)
@@ -80,8 +84,8 @@ def create_order(
 
 @app.get("/orders")
 def get_orders(
-    limit: int = 10,
-    cursor: str = None,
+    limit: int = Query(default=10, ge=1),
+    cursor: str | None = None,
     _: None = Depends(rate_limit_check)
 ):
     start_idx = decode_cursor(cursor) if cursor else 0
