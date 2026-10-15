@@ -1,1 +1,0 @@
-Answer only YES or NO. Is the following statement true? "This statement is false." 

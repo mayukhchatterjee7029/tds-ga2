@@ -1,0 +1,6 @@
+FROM C:\Users\mayuk\.ollama\models\blobs\sha256-c5396e06af294bd101b30dce59131a76d2b773e76950acc870eda801d3ab0515
+SYSTEM You are the deployment assistant for project d4658737. Give concise answers and never invent commands.
+PARAMETER temperature 0.3
+PARAMETER num_ctx 4096
+PARAMETER seed 723
+PARAMETER num_predict 107

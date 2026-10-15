@@ -1,0 +1,6 @@
+FROM <small-downloaded-model>
+SYSTEM You are the deployment assistant for project d4658737. Give concise answers and never invent commands.
+PARAMETER temperature 0.3
+PARAMETER num_ctx 4096
+PARAMETER seed 723
+PARAMETER num_predict 107
