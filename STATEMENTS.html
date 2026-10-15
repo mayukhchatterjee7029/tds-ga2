@@ -1,0 +1,1812 @@
+
+
+  <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary" data-bs-theme="dark" id="navbar">
+    <div class="container-fluid">
+      <span class="navbar-brand" href=".">
+        <span id="countdown">Due Sun, 18 Oct, 2026, 11:59 pm IST</span>
+        <button id="saved-score" type="button" class="btn btn-dark btn-sm mb-1 ms-2" title="Score of your latest save">Saved: –</button>
+        <button id="score" type="button" class="btn btn-dark btn-sm mb-1 ms-2" title="Score from your last check">Checked: 0</button>
+        <button type="button" class="btn btn-outline-light btn-sm mb-1 ms-2 check-action" title="Check your score">Check all</button>
+        <button type="button" class="btn btn-outline-light btn-sm mb-1 ms-2 save-action" title="Save your progress">Save</button>
+        <a href="/score" class="btn btn-outline-light btn-sm mb-1 ms-2" id="score-link" target="_blank" rel="noopener">All scores</a>
+      </span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <button class="btn btn-outline-light ms-auto my-2 my-lg-0 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#question-sidebar" aria-controls="question-sidebar" aria-label="Toggle questions" title="Show questions">
+          <i class="bi bi-list-columns"></i>
+        </button>
+        <div class="nav-item dropdown my-2 my-lg-0 me-2" role="group" aria-label="Choose AI" title="Choose AI">
+          <button class="ai-picker btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Choose AI">
+            <i class="bi bi-magic"></i> <span class="d-lg-none ms-2">Choose AI</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-lg-end">
+            <li><button class="dropdown-item" data-ai-name="chatgpt" data-ai-template="https://chatgpt.com/?q=%s">ChatGPT</button></li>
+            <li><button class="dropdown-item" data-ai-name="claude" data-ai-template="https://claude.ai/new?q=%s">Claude</button></li>
+            <li><button class="dropdown-item" data-ai-name="grok" data-ai-template="https://grok.com/?q=%s">Grok</button></li>
+            <li><button class="dropdown-item active" data-ai-name="perplexity" data-ai-template="https://www.perplexity.ai/search?q=%s">Perplexity</button></li>
+            <li><button class="dropdown-item" data-ai-name="google" data-ai-template="https://www.google.com/search?udm=50&amp;q=%s">Google AI mode</button></li>
+            <li><button class="dropdown-item" data-ai-name="clipboard" data-ai-template="clipboard">Copy to Clipboard</button></li>
+            <!-- li><button class="dropdown-item" data-ai-name="mistral" data-ai-template="https://chat.mistral.ai/chat?q=%s">Mistral</button></li -->
+          </ul>
+        </div>
+        <div class="nav-item dropdown my-2 my-lg-0" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
+          <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (dark)">
+            <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-lg-end">
+            <li><button class="dropdown-item" data-bs-theme-value="light" aria-pressed="false"><i class="me-2 bi bi-sun-fill"></i> Light</button></li>
+            <li><button class="dropdown-item active" data-bs-theme-value="dark" aria-pressed="true"><i class="me-2 bi bi-moon-stars-fill"></i> Dark</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="auto" aria-pressed="false"><i class="me-2 bi bi-circle-half"></i> Auto</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="question-sidebar" aria-labelledby="question-sidebar-label">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="question-sidebar-label">
+        <i class="bi bi-question-circle me-2"></i>Questions
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div id="sidebar-questions"><!----><ol class="mt-3">
+    <!--?lit$646114207$--><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-termlog-httpbin-server" data-title="HTTPBin terminal lab (termlog)">1. HTTPBin terminal lab (termlog)</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-model-intelligence-auto-server" data-title="Differentiate model intelligence — automatic evaluation">2. Differentiate model intelligence — automatic evaluation</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-fastapi-metrics-cors-server" data-title="Deploy a CORS-Aware Metrics API">3. Deploy a CORS-Aware Metrics API</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-oauth-jwks-verify-server" data-title="OAuth 2.0 / OIDC Token Verification Service">4. OAuth 2.0 / OIDC Token Verification Service</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-config-precedence-server" data-title="Resolve 12-Factor Config Precedence">5. Resolve 12-Factor Config Precedence</a> (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-compose-redis-tunnel-server" data-title="Multi-Container App via Compose, Exposed by Tunnel">6. Multi-Container App via Compose, Exposed by Tunnel</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-deploy-analytics-platform-server" data-title="Deploy a POST Analytics Endpoint">7. Deploy a POST Analytics Endpoint</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-observability-metrics-server" data-title="Production Observability: Metrics, Health &amp; Structured Logs">8. Production Observability: Metrics, Health &amp; Structured Logs</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-ollama-tunnel-llm-server" data-title="Expose a Local LLM through a Tunnel">9. Expose a Local LLM through a Tunnel</a> (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-local-llm-structured-server" data-title="Local LLM Structured-Output Service">10. Local LLM Structured-Output Service</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-api-idempotency-pagination-server" data-title="API Engineering: Idempotency + Pagination + Rate Limit">11. API Engineering: Idempotency + Pagination + Rate Limit</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-middleware-ratelimit-cors-server" data-title="Middleware Stack: Rate-Limit + CORS + Request Context">12. Middleware Stack: Rate-Limit + CORS + Request Context</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-ollama-stream-reassembly-server" data-title="Recover a fragmented LLM stream">13. Recover a fragmented LLM stream</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-docker-build-cache-server" data-title="Diagnose Docker build cache misses">14. Diagnose Docker build cache misses</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li style="list-style: none; margin-left: -1.5rem;"><span class="sidebar-feedback-icon me-1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Status/pending"><path id="Vector" d="M7 0C3.136 0 0 3.136 0 7C0 10.864 3.136 14 7 14C10.864 14 14 10.864 14 7C14 3.136 10.864 0 7 0ZM7 12.6C3.906 12.6 1.4 10.094 1.4 7C1.4 3.906 3.906 1.4 7 1.4C10.094 1.4 12.6 3.906 12.6 7C12.6 10.094 10.094 12.6 7 12.6Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_2" d="M7 1.16669C3.78 1.16669 1.16667 3.78002 1.16667 7.00002C1.16667 10.22 3.78 12.8334 7 12.8334C10.22 12.8334 12.8333 10.22 12.8333 7.00002C12.8333 3.78002 10.22 1.16669 7 1.16669ZM7 11.6667C4.42167 11.6667 2.33333 9.57835 2.33333 7.00002C2.33333 4.42169 4.42167 2.33335 7 2.33335C9.57833 2.33335 11.6667 4.42169 11.6667 7.00002C11.6667 9.57835 9.57833 11.6667 7 11.6667Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path><path id="Vector_3" d="M7 2.33331C4.424 2.33331 2.33333 4.42398 2.33333 6.99998C2.33333 9.57598 4.424 11.6666 7 11.6666C9.576 11.6666 11.6667 9.57598 11.6667 6.99998C11.6667 4.42398 9.576 2.33331 7 2.33331ZM7 10.7333C4.93733 10.7333 3.26667 9.06265 3.26667 6.99998C3.26667 4.93731 4.93733 3.26665 7 3.26665C9.06267 3.26665 10.7333 4.93731 10.7333 6.99998C10.7333 9.06265 9.06267 10.7333 7 10.7333Z" fill="#F79009" style="--darkreader-inline-fill: var(--darkreader-text-f79009, #f89b21);" data-darkreader-inline-fill=""></path></g></svg></span><a href="#hq-termlog-ollama-modelfile-server" data-title="Create a custom Ollama model (termlog)">15. Create a custom Ollama model (termlog)</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!---->
+  </ol></div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section id="instructions">
+    <h1 class="display-3 my-5">
+      TDS 2026 Sep GA2
+    </h1>
+
+    <h2 class="display-6 my-5">Instructions</h2>
+    <ol>
+      <li><strong>Use AI</strong>. Click <kbd>Ask AI</kbd> and paste the answer. If it works, don't waste time. <em>Learn only what AI <strong>can't</strong> do.</em></li>
+      <li><strong>Discuss</strong>. Click on the <kbd>Discuss</kbd> button to work with others.</li>
+      <li><strong>Check answers</strong> by pressing <kbd>Check</kbd>. (But unless you <kbd>Save</kbd>, it's not evaluated.)</li>
+      <li><strong>Save regularly</strong> by pressing <kbd>Save</kbd>. Save many times. Only the last saved submission <em>before the deadline</em> is scored. See your <a href="/score">scores</a>.</li>
+      <li><strong>Reload carefully</strong>! Answers are saved in your browser (not server), but <em>questions might change</em> a bit, or LLMs might re-evaluate.</li>
+      <li><strong>Anything is allowed</strong>. Help from the Internet, ChatGPT, friends, pets, hacking, ... <em>anything</em>. Just get the job done!</li>
+      <li>
+        <hr>
+        <strong><a target="_blank" href="https://www.s-anand.net/blog/breaking-rules-in-the-age-of-ai/">Frequently Asked Questions</a></strong>:
+        <ul>
+          <li><strong>Why does my answer not work?</strong> Ask AI.</li>
+          <li><strong>But I haven't been taught this!</strong> Learn from AI.</li>
+          <li><strong>I have a basic question.</strong> Ask AI.</li>
+          <li><strong>This question has a bug.</strong> Raise it in the discussion.</li>
+          <li><strong>This is too easy!</strong> Good. Help others.</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+    <section id="login" class="my-5"><!---->
+        <div id="logged-in-email" class="mb-3">You are logged in as <strong><!--?lit$646114207$-->24f3003132@ds.study.iitm.ac.in</strong>.</div>
+        <div class="mb-3">
+          <button class="btn btn-sm btn-outline-danger">
+            Logout
+          </button>
+        </div>
+      </section>
+
+    <section id="notification" class="my-5"><div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Recent saves <small class="text-muted fs-6 fw-light">Most recent (before deadline) is your official score</small></h4>
+        <p>No recent saves</p>
+        </div></section>
+
+    <section class="alert alert-info my-5 d-flex align-items-center d-none" id="loading-questions">
+      <div class="spinner-border text-primary me-2" role="status"></div>
+      <span>Loading questions...</span>
+    </section>
+
+    <form id="exam-form" class="needs-validation" novalidate="" data-quiz="tds-2026-09-ga2">
+      <section id="questions" class="my-5" data-questions="" data-quiz="tds-2026-09-ga2"><!----><!----><h1 class="display-6">Questions</h1><!----><!----><ol class="mt-3">
+    <!--?lit$646114207$--><!----><li><a href="#hq-termlog-httpbin-server"><!--?lit$646114207$-->HTTPBin terminal lab (termlog)</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-model-intelligence-auto-server"><!--?lit$646114207$-->Differentiate model intelligence — automatic evaluation</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-fastapi-metrics-cors-server"><!--?lit$646114207$-->Deploy a CORS-Aware Metrics API</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-oauth-jwks-verify-server"><!--?lit$646114207$-->OAuth 2.0 / OIDC Token Verification Service</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-config-precedence-server"><!--?lit$646114207$-->Resolve 12-Factor Config Precedence</a> (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</li><!----><!----><li><a href="#hq-compose-redis-tunnel-server"><!--?lit$646114207$-->Multi-Container App via Compose, Exposed by Tunnel</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-deploy-analytics-platform-server"><!--?lit$646114207$-->Deploy a POST Analytics Endpoint</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-observability-metrics-server"><!--?lit$646114207$-->Production Observability: Metrics, Health &amp; Structured Logs</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-ollama-tunnel-llm-server"><!--?lit$646114207$-->Expose a Local LLM through a Tunnel</a> (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</li><!----><!----><li><a href="#hq-local-llm-structured-server"><!--?lit$646114207$-->Local LLM Structured-Output Service</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-api-idempotency-pagination-server"><!--?lit$646114207$-->API Engineering: Idempotency + Pagination + Rate Limit</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-middleware-ratelimit-cors-server"><!--?lit$646114207$-->Middleware Stack: Rate-Limit + CORS + Request Context</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-ollama-stream-reassembly-server"><!--?lit$646114207$-->Recover a fragmented LLM stream</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-docker-build-cache-server"><!--?lit$646114207$-->Diagnose Docker build cache misses</a> (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</li><!----><!----><li><a href="#hq-termlog-ollama-modelfile-server"><!--?lit$646114207$-->Create a custom Ollama model (termlog)</a> (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</li><!---->
+  </ol><!----><!---->
+        <details class="card my-5" open="" data-question="q-termlog-httpbin-server" id="hq-termlog-httpbin-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->1</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->HTTPBin terminal lab (termlog) (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>Practice HTTP requests with <a href="https://httpbin.org/" target="_blank" rel="noopener">HTTPBin</a>.
+        Complete all seven exercises with curl in one signed terminal recording.</p>
+      <p>Install <a href="https://github.com/mynkpdr/termlog" target="_blank" rel="noopener">termlog</a>,
+        run <code>termlog login</code> as <strong><!--?lit$646114207$-->24f3003132@ds.study.iitm.ac.in</strong>, then start
+        <code>termlog rec httpbin.cast</code>. Use a bash-compatible shell.</p>
+      <p>Your tag and dummy bearer token: <code><!--?lit$646114207$-->http-d4658737</code>. Quantity: <code><!--?lit$646114207$-->12</code>.</p>
+      <p>Inside the recording, define this helper. It wraps each command's output with grader markers:</p>
+      <pre><!--?lit$646114207$-->capture() { task="$1"; shift; printf '\nHTTPBIN_BEGIN http-d4658737 %s\n' "$task"; "$@"; printf '\nHTTPBIN_END http-d4658737 %s\n' "$task"; }</pre>
+      <p>Run each request as <code>capture TASK curl -sS ...</code>, replacing TASK with the label below
+        and choosing the appropriate curl options. Do not use <code>-i</code> or print extra text inside captures.</p>
+      <ol>
+        <li><strong>GET:</strong> GET <code>https://httpbin.org/get</code> with query parameters
+          <code>course=TDS</code>, <code>tag=<!--?lit$646114207$-->http-d4658737</code>, and request header <code>X-Exam-Tag: <!--?lit$646114207$-->http-d4658737</code>.</li>
+        <li><strong>POST:</strong> POST to <code>https://httpbin.org/post</code> using
+          <code>Content-Type: application/json</code> and body
+          <code><!--?lit$646114207$-->{"tag":"http-d4658737","quantity":12,"active":true}</code>. Preserve number and boolean types.</li>
+        <li><strong>FORM:</strong> PUT to <code>https://httpbin.org/put</code> using URL-encoded form fields
+          <code>tag=<!--?lit$646114207$-->http-d4658737</code> and <code>quantity=<!--?lit$646114207$-->12</code>.</li>
+        <li><strong>AUTH:</strong> GET <code>https://httpbin.org/bearer</code> with
+          <code>Authorization: Bearer <!--?lit$646114207$-->http-d4658737</code>. This is a dummy token; never use a real API key.</li>
+        <li><strong>REDIRECT:</strong> Call <code>https://httpbin.org/redirect-to</code> with its
+          <code>url</code> parameter pointing to <code>https://httpbin.org/get?tag=<!--?lit$646114207$-->http-d4658737</code>.
+          Follow the redirect and capture the final JSON body.</li>
+        <li><strong>COOKIES:</strong> First call <code>https://httpbin.org/cookies/set?exam=<!--?lit$646114207$-->http-d4658737</code>
+          and save its cookie to a cookie jar. Then capture a GET to <code>https://httpbin.org/cookies</code>
+          using that jar. Only the final GET belongs inside the COOKIES capture.</li>
+        <li><strong>STATUS:</strong> Request <code>https://httpbin.org/status/<!--?lit$646114207$-->422</code>, discard its body,
+          and use curl's <code>--write-out</code> option to print only the numeric HTTP status. Capture that output.</li>
+      </ol>
+      <p>Inspect the real responses. If HTTPBin temporarily fails, repeat the affected task; the last complete
+        capture for each label is checked. End with <code>exit</code> and package your recording and receipt:</p>
+      <pre>tar -czf submission.tar.gz httpbin.cast httpbin.cast.jwt</pre>
+      <p>Upload the archive to a public file URL. The grader checks the signed receipt, your account, exit event,
+        recorded commands and all seven outputs. Maximum 1 MB compressed and 5 MB uncompressed.</p>
+      <label class="form-label" for="q-termlog-httpbin-server">Public URL of submission.tar.gz</label>
+      <input class="form-control" type="url" placeholder="https://.../submission.tar.gz" id="q-termlog-httpbin-server" name="q-termlog-httpbin-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div></div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-termlog-httpbin-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/539" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A1%20HTTPBin%20terminal%20lab%20(termlog)%20(2%20marks)%20Solved%20%0A%0APractice%20HTTP%20requests%20with%20%5BHTTPBin%5D(https%3A%2F%2Fhttpbin.org%2F).%20Complete%20all%20seven%20exercises%20with%20curl%20in%20one%20signed%20terminal%20recording.%0A%0AInstall%20%5Btermlog%5D(https%3A%2F%2Fgithub.com%2Fmynkpdr%2Ftermlog)%2C%20run%20%60termlog%20login%60%20as%20**24f3003132%40ds.study.iitm.ac.in**%2C%20then%20start%20%60termlog%20rec%20httpbin.cast%60.%20Use%20a%20bash-compatible%20shell.%0A%0AYour%20tag%20and%20dummy%20bearer%20token%3A%20%60http-d4658737%60.%20Quantity%3A%20%6012%60.%0A%0AInside%20the%20recording%2C%20define%20this%20helper.%20It%20wraps%20each%20command's%20output%20with%20grader%20markers%3A%0A%0Acapture()%20%7B%20task%3D%22%241%22%3B%20shift%3B%20printf%20'%5CnHTTPBIN_BEGIN%20http-d4658737%20%25s%5Cn'%20%22%24task%22%3B%20%22%24%40%22%3B%20printf%20'%5CnHTTPBIN_END%20http-d4658737%20%25s%5Cn'%20%22%24task%22%3B%20%7D%0A%0ARun%20each%20request%20as%20%60capture%20TASK%20curl%20-sS%20...%60%2C%20replacing%20TASK%20with%20the%20label%20below%20and%20choosing%20the%20appropriate%20curl%20options.%20Do%20not%20use%20%60-i%60%20or%20print%20extra%20text%20inside%20captures.%0A%0A1.%20**GET%3A**%20GET%20%60https%3A%2F%2Fhttpbin.org%2Fget%60%20with%20query%20parameters%20%60course%3DTDS%60%2C%20%60tag%3Dhttp-d4658737%60%2C%20and%20request%20header%20%60X-Exam-Tag%3A%20http-d4658737%60.%0A2.%20**POST%3A**%20POST%20to%20%60https%3A%2F%2Fhttpbin.org%2Fpost%60%20using%20%60Content-Type%3A%20application%2Fjson%60%20and%20body%20%60%7B%22tag%22%3A%22http-d4658737%22%2C%22quantity%22%3A12%2C%22active%22%3Atrue%7D%60.%20Preserve%20number%20and%20boolean%20types.%0A3.%20**FORM%3A**%20PUT%20to%20%60https%3A%2F%2Fhttpbin.org%2Fput%60%20using%20URL-encoded%20form%20fields%20%60tag%3Dhttp-d4658737%60%20and%20%60quantity%3D12%60.%0A4.%20**AUTH%3A**%20GET%20%60https%3A%2F%2Fhttpbin.org%2Fbearer%60%20with%20%60Authorization%3A%20Bearer%20http-d4658737%60.%20This%20is%20a%20dummy%20token%3B%20never%20use%20a%20real%20API%20key.%0A5.%20**REDIRECT%3A**%20Call%20%60https%3A%2F%2Fhttpbin.org%2Fredirect-to%60%20with%20its%20%60url%60%20parameter%20pointing%20to%20%60https%3A%2F%2Fhttpbin.org%2Fget%3Ftag%3Dhttp-d4658737%60.%20Follow%20the%20redirect%20and%20capture%20the%20final%20JSON%20body.%0A6.%20**COOKIES%3A**%20First%20call%20%60https%3A%2F%2Fhttpbin.org%2Fcookies%2Fset%3Fexam%3Dhttp-d4658737%60and%20save%20its%20cookie%20to%20a%20cookie%20jar.%20Then%20capture%20a%20GET%20to%20%60https%3A%2F%2Fhttpbin.org%2Fcookies%60using%20that%20jar.%20Only%20the%20final%20GET%20belongs%20inside%20the%20COOKIES%20capture.%0A7.%20**STATUS%3A**%20Request%20%60https%3A%2F%2Fhttpbin.org%2Fstatus%2F422%60%2C%20discard%20its%20body%2C%20and%20use%20curl's%20%60--write-out%60%20option%20to%20print%20only%20the%20numeric%20HTTP%20status.%20Capture%20that%20output.%0A%0AInspect%20the%20real%20responses.%20If%20HTTPBin%20temporarily%20fails%2C%20repeat%20the%20affected%20task%3B%20the%20last%20complete%20capture%20for%20each%20label%20is%20checked.%20End%20with%20%60exit%60%20and%20package%20your%20recording%20and%20receipt%3A%0A%0Atar%20-czf%20submission.tar.gz%20httpbin.cast%20httpbin.cast.jwt%0A%0AUpload%20the%20archive%20to%20a%20public%20file%20URL.%20The%20grader%20checks%20the%20signed%20receipt%2C%20your%20account%2C%20exit%20event%2C%20recorded%20commands%20and%20all%20seven%20outputs.%20Maximum%201%20MB%20compressed%20and%205%20MB%20uncompressed.%0A%0APublic%20URL%20of%20submission.tar.gz" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+1 HTTPBin terminal lab (termlog) (2 marks) Solved 
+
+Practice HTTP requests with [HTTPBin](https://httpbin.org/). Complete all seven exercises with curl in one signed terminal recording.
+
+Install [termlog](https://github.com/mynkpdr/termlog), run `termlog login` as **24f3003132@ds.study.iitm.ac.in**, then start `termlog rec httpbin.cast`. Use a bash-compatible shell.
+
+Your tag and dummy bearer token: `http-d4658737`. Quantity: `12`.
+
+Inside the recording, define this helper. It wraps each command's output with grader markers:
+
+capture() { task=&quot;$1&quot;; shift; printf '\nHTTPBIN_BEGIN http-d4658737 %s\n' &quot;$task&quot;; &quot;$@&quot;; printf '\nHTTPBIN_END http-d4658737 %s\n' &quot;$task&quot;; }
+
+Run each request as `capture TASK curl -sS ...`, replacing TASK with the label below and choosing the appropriate curl options. Do not use `-i` or print extra text inside captures.
+
+1. **GET:** GET `https://httpbin.org/get` with query parameters `course=TDS`, `tag=http-d4658737`, and request header `X-Exam-Tag: http-d4658737`.
+2. **POST:** POST to `https://httpbin.org/post` using `Content-Type: application/json` and body `{&quot;tag&quot;:&quot;http-d4658737&quot;,&quot;quantity&quot;:12,&quot;active&quot;:true}`. Preserve number and boolean types.
+3. **FORM:** PUT to `https://httpbin.org/put` using URL-encoded form fields `tag=http-d4658737` and `quantity=12`.
+4. **AUTH:** GET `https://httpbin.org/bearer` with `Authorization: Bearer http-d4658737`. This is a dummy token; never use a real API key.
+5. **REDIRECT:** Call `https://httpbin.org/redirect-to` with its `url` parameter pointing to `https://httpbin.org/get?tag=http-d4658737`. Follow the redirect and capture the final JSON body.
+6. **COOKIES:** First call `https://httpbin.org/cookies/set?exam=http-d4658737`and save its cookie to a cookie jar. Then capture a GET to `https://httpbin.org/cookies`using that jar. Only the final GET belongs inside the COOKIES capture.
+7. **STATUS:** Request `https://httpbin.org/status/422`, discard its body, and use curl's `--write-out` option to print only the numeric HTTP status. Capture that output.
+
+Inspect the real responses. If HTTPBin temporarily fails, repeat the affected task; the last complete capture for each label is checked. End with `exit` and package your recording and receipt:
+
+tar -czf submission.tar.gz httpbin.cast httpbin.cast.jwt
+
+Upload the archive to a public file URL. The grader checks the signed receipt, your account, exit event, recorded commands and all seven outputs. Maximum 1 MB compressed and 5 MB uncompressed.
+
+Public URL of submission.tar.gz" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-model-intelligence-auto-server" id="hq-model-intelligence-auto-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->2</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Differentiate model intelligence — automatic evaluation (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>Write one prompt that makes <strong>GPT-5 nano answer YES</strong> and
+        <strong>GPT-5 mini answer NO</strong>. Try a subtle contradiction, a misleading premise or a reasoning
+        problem that separates their behavior. This is a measured disagreement challenge, not proof of a
+        universal intelligence ranking.</p>
+      <ul>
+        <li>The backend sends the identical prompt as a single user message to
+          <code>gpt-5-nano-2025-08-07</code> and <code>gpt-5-mini-2025-08-07</code> through AI Pipe.
+          No system message, tools, prior conversation or model-specific instructions are added.</li>
+        <li>Both use minimal reasoning effort and a 2,048 completion-token cap. Include an instruction
+          to answer only YES or NO in your own prompt.</li>
+        <li>Three independent trials are run. In at least two trials, nano must reply YES and mini NO
+          in that same trial. This earns full marks; otherwise zero.</li>
+        <li>Case and surrounding whitespace are ignored; one final period or exclamation mark is allowed.
+          Explanations, quoted answers and answers containing both words fail.</li>
+        <li>Maximum 1,000 words and 12,000 characters. Submit just the prompt, not JSON or a token.</li>
+        <li>Each completed evaluation is stored for your account and exact trimmed prompt. Checking or saving
+          it again reuses that result, including failed results. Edit the prompt for a new evaluation.</li>
+        <li>At most three uncached evaluation attempts per minute. Each uses six model calls and may take
+          up to 45 seconds. Provider errors are not graded or cached; they still consume an attempt slot.</li>
+      </ul>
+      <p>Use your own <a href="https://aipipe.org/" target="_blank" rel="noopener">AI Pipe</a> token when
+        prompted, just like the YES/NO model question. Each new evaluation uses your AI Pipe quota.
+        Your token stays in this page's memory and is sent to the backend only to run the evaluation;
+        it is not included in your saved answer. Save reuses the verified result without needing the token.
+        You can inspect all six replies below after checking.</p>
+      <label class="form-label" for="q-model-intelligence-auto-server">Your prompt</label>
+      <textarea class="form-control" rows="8" maxlength="12000" placeholder="Write a prompt that ends by requesting only YES or NO." id="q-model-intelligence-auto-server" name="q-model-intelligence-auto-server"></textarea><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+      <pre class="mt-3" style="white-space:pre-wrap" aria-live="polite" id="q-model-intelligence-auto-server-feedback"></pre>
+    </div></div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-model-intelligence-auto-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/537" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A2%20Differentiate%20model%20intelligence%20%E2%80%94%20automatic%20evaluation%20(2%20marks)%20Solved%20%0A%0AWrite%20one%20prompt%20that%20makes%20**GPT-5%20nano%20answer%20YES**%20and%20**GPT-5%20mini%20answer%20NO**.%20Try%20a%20subtle%20contradiction%2C%20a%20misleading%20premise%20or%20a%20reasoning%20problem%20that%20separates%20their%20behavior.%20This%20is%20a%20measured%20disagreement%20challenge%2C%20not%20proof%20of%20a%20universal%20intelligence%20ranking.%0A%0A-%20The%20backend%20sends%20the%20identical%20prompt%20as%20a%20single%20user%20message%20to%20%60gpt-5-nano-2025-08-07%60%20and%20%60gpt-5-mini-2025-08-07%60%20through%20AI%20Pipe.%20No%20system%20message%2C%20tools%2C%20prior%20conversation%20or%20model-specific%20instructions%20are%20added.%0A-%20Both%20use%20minimal%20reasoning%20effort%20and%20a%202%2C048%20completion-token%20cap.%20Include%20an%20instruction%20to%20answer%20only%20YES%20or%20NO%20in%20your%20own%20prompt.%0A-%20Three%20independent%20trials%20are%20run.%20In%20at%20least%20two%20trials%2C%20nano%20must%20reply%20YES%20and%20mini%20NO%20in%20that%20same%20trial.%20This%20earns%20full%20marks%3B%20otherwise%20zero.%0A-%20Case%20and%20surrounding%20whitespace%20are%20ignored%3B%20one%20final%20period%20or%20exclamation%20mark%20is%20allowed.%20Explanations%2C%20quoted%20answers%20and%20answers%20containing%20both%20words%20fail.%0A-%20Maximum%201%2C000%20words%20and%2012%2C000%20characters.%20Submit%20just%20the%20prompt%2C%20not%20JSON%20or%20a%20token.%0A-%20Each%20completed%20evaluation%20is%20stored%20for%20your%20account%20and%20exact%20trimmed%20prompt.%20Checking%20or%20saving%20it%20again%20reuses%20that%20result%2C%20including%20failed%20results.%20Edit%20the%20prompt%20for%20a%20new%20evaluation.%0A-%20At%20most%20three%20uncached%20evaluation%20attempts%20per%20minute.%20Each%20uses%20six%20model%20calls%20and%20may%20take%20up%20to%2045%20seconds.%20Provider%20errors%20are%20not%20graded%20or%20cached%3B%20they%20still%20consume%20an%20attempt%20slot.%0A%0AUse%20your%20own%20%5BAI%20Pipe%5D(https%3A%2F%2Faipipe.org%2F)%20token%20when%20prompted%2C%20just%20like%20the%20YES%2FNO%20model%20question.%20Each%20new%20evaluation%20uses%20your%20AI%20Pipe%20quota.%20Your%20token%20stays%20in%20this%20page's%20memory%20and%20is%20sent%20to%20the%20backend%20only%20to%20run%20the%20evaluation%3B%20it%20is%20not%20included%20in%20your%20saved%20answer.%20Save%20reuses%20the%20verified%20result%20without%20needing%20the%20token.%20You%20can%20inspect%20all%20six%20replies%20below%20after%20checking.%0A%0AYour%20prompt" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+2 Differentiate model intelligence — automatic evaluation (2 marks) Solved 
+
+Write one prompt that makes **GPT-5 nano answer YES** and **GPT-5 mini answer NO**. Try a subtle contradiction, a misleading premise or a reasoning problem that separates their behavior. This is a measured disagreement challenge, not proof of a universal intelligence ranking.
+
+- The backend sends the identical prompt as a single user message to `gpt-5-nano-2025-08-07` and `gpt-5-mini-2025-08-07` through AI Pipe. No system message, tools, prior conversation or model-specific instructions are added.
+- Both use minimal reasoning effort and a 2,048 completion-token cap. Include an instruction to answer only YES or NO in your own prompt.
+- Three independent trials are run. In at least two trials, nano must reply YES and mini NO in that same trial. This earns full marks; otherwise zero.
+- Case and surrounding whitespace are ignored; one final period or exclamation mark is allowed. Explanations, quoted answers and answers containing both words fail.
+- Maximum 1,000 words and 12,000 characters. Submit just the prompt, not JSON or a token.
+- Each completed evaluation is stored for your account and exact trimmed prompt. Checking or saving it again reuses that result, including failed results. Edit the prompt for a new evaluation.
+- At most three uncached evaluation attempts per minute. Each uses six model calls and may take up to 45 seconds. Provider errors are not graded or cached; they still consume an attempt slot.
+
+Use your own [AI Pipe](https://aipipe.org/) token when prompted, just like the YES/NO model question. Each new evaluation uses your AI Pipe quota. Your token stays in this page's memory and is sent to the backend only to run the evaluation; it is not included in your saved answer. Save reuses the verified result without needing the token. You can inspect all six replies below after checking.
+
+Your prompt" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-fastapi-metrics-cors-server" id="hq-fastapi-metrics-cors-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->3</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Deploy a CORS-Aware Metrics API (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Build and deploy a <strong>FastAPI</strong> service that computes descriptive statistics and
+        enforces a strict per-origin CORS policy. The grader probes your live service with a fresh
+        batch of random integers on every check, so you must compute results rather than return
+        hard-coded values.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned values</div>
+        <div>
+          <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Allowed CORS origin</span><br>
+          <code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->https://dash-b2nr4n.example.com</code>
+        </div>
+      </div>
+
+      <p><strong>Endpoint: <code>GET /stats?values=1,2,3,…</code></strong></p>
+      <ul>
+        <li>Parse the comma-separated integers from the <code>values</code> query parameter.</li>
+        <li>
+          Return JSON: <code>{"email": "&lt;your-email&gt;", "count": N, "sum": S, "min": M, "max": X,
+          "mean": F}</code> — mean must be within ±0.01 of the true value.
+        </li>
+        <li>Include <code>email</code> exactly as your logged-in address.</li>
+      </ul>
+
+      <p><strong>CORS policy</strong></p>
+      <ul>
+        <li>
+          Only your <em>assigned</em> allowed origin (shown above) must receive the
+          <code>Access-Control-Allow-Origin</code> header — no wildcards (<code>*</code>).
+        </li>
+        <li>
+          Preflight <code>OPTIONS /stats</code> from the allowed origin must succeed (return ACAO
+          header); preflights from any other origin must be rejected (no ACAO header).
+        </li>
+      </ul>
+
+      <p><strong>Required middleware headers</strong> — every response must carry:</p>
+      <ul>
+        <li><code>X-Request-ID</code>: a unique identifier for this request (e.g. a UUID).</li>
+        <li>
+          <code>X-Process-Time</code>: the handler duration in seconds as a non-negative decimal number
+          (e.g. <code>0.001234</code>).
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks</strong></p>
+      <ol>
+        <li>Preflight from the allowed origin — expects ACAO header.</li>
+        <li>Preflight from a random evil origin — must receive no ACAO header.</li>
+        <li>
+          <code>GET /stats?values=…</code> with a fresh random batch — checks all five stat fields plus
+          <code>email</code>, <code>X-Request-ID</code>, and <code>X-Process-Time</code>.
+        </li>
+      </ol>
+
+      <p>
+        Deploy to any public host (Vercel, Render, Fly.io, Cloudflare Workers, HF Spaces, etc.) and
+        paste your base URL below.
+      </p>
+      <label class="form-label" for="q-fastapi-metrics-cors-server"><strong>Your deployed service base URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-metrics.example.workers.dev" id="q-fastapi-metrics-cors-server" name="q-fastapi-metrics-cors-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-fastapi-metrics-cors-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/418" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A3%20Deploy%20a%20CORS-Aware%20Metrics%20API%20(1.5%20marks)%20Solved%20%0A%0ABuild%20and%20deploy%20a%20**FastAPI**%20service%20that%20computes%20descriptive%20statistics%20and%20enforces%20a%20strict%20per-origin%20CORS%20policy.%20The%20grader%20probes%20your%20live%20service%20with%20a%20fresh%20batch%20of%20random%20integers%20on%20every%20check%2C%20so%20you%20must%20compute%20results%20rather%20than%20return%20hard-coded%20values.%20%0A%0AYour%20assigned%20values%0A%0AAllowed%20CORS%20origin%20%20%0A%60https%3A%2F%2Fdash-b2nr4n.example.com%60%20%0A%0A**Endpoint%3A%20%60GET%20%2Fstats%3Fvalues%3D1%2C2%2C3%2C%E2%80%A6%60**%0A%0A-%20Parse%20the%20comma-separated%20integers%20from%20the%20%60values%60%20query%20parameter.%0A-%20Return%20JSON%3A%20%60%7B%22email%22%3A%20%22%3Cyour-email%3E%22%2C%20%22count%22%3A%20N%2C%20%22sum%22%3A%20S%2C%20%22min%22%3A%20M%2C%20%22max%22%3A%20X%2C%20%22mean%22%3A%20F%7D%60%20%E2%80%94%20mean%20must%20be%20within%20%C2%B10.01%20of%20the%20true%20value.%0A-%20Include%20%60email%60%20exactly%20as%20your%20logged-in%20address.%0A%0A**CORS%20policy**%0A%0A-%20Only%20your%20_assigned_%20allowed%20origin%20(shown%20above)%20must%20receive%20the%20%60Access-Control-Allow-Origin%60%20header%20%E2%80%94%20no%20wildcards%20(%60*%60).%0A-%20Preflight%20%60OPTIONS%20%2Fstats%60%20from%20the%20allowed%20origin%20must%20succeed%20(return%20ACAO%20header)%3B%20preflights%20from%20any%20other%20origin%20must%20be%20rejected%20(no%20ACAO%20header).%0A%0A**Required%20middleware%20headers**%20%E2%80%94%20every%20response%20must%20carry%3A%0A%0A-%20%60X-Request-ID%60%3A%20a%20unique%20identifier%20for%20this%20request%20(e.g.%20a%20UUID).%0A-%20%60X-Process-Time%60%3A%20the%20handler%20duration%20in%20seconds%20as%20a%20non-negative%20decimal%20number%20(e.g.%20%600.001234%60).%0A%0A**What%20the%20grader%20checks**%0A%0A1.%20Preflight%20from%20the%20allowed%20origin%20%E2%80%94%20expects%20ACAO%20header.%0A2.%20Preflight%20from%20a%20random%20evil%20origin%20%E2%80%94%20must%20receive%20no%20ACAO%20header.%0A3.%20%60GET%20%2Fstats%3Fvalues%3D%E2%80%A6%60%20with%20a%20fresh%20random%20batch%20%E2%80%94%20checks%20all%20five%20stat%20fields%20plus%20%60email%60%2C%20%60X-Request-ID%60%2C%20and%20%60X-Process-Time%60.%0A%0ADeploy%20to%20any%20public%20host%20(Vercel%2C%20Render%2C%20Fly.io%2C%20Cloudflare%20Workers%2C%20HF%20Spaces%2C%20etc.)%20and%20paste%20your%20base%20URL%20below.%20%0A%0A**Your%20deployed%20service%20base%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+3 Deploy a CORS-Aware Metrics API (1.5 marks) Solved 
+
+Build and deploy a **FastAPI** service that computes descriptive statistics and enforces a strict per-origin CORS policy. The grader probes your live service with a fresh batch of random integers on every check, so you must compute results rather than return hard-coded values. 
+
+Your assigned values
+
+Allowed CORS origin  
+`https://dash-b2nr4n.example.com` 
+
+**Endpoint: `GET /stats?values=1,2,3,…`**
+
+- Parse the comma-separated integers from the `values` query parameter.
+- Return JSON: `{&quot;email&quot;: &quot;&lt;your-email&gt;&quot;, &quot;count&quot;: N, &quot;sum&quot;: S, &quot;min&quot;: M, &quot;max&quot;: X, &quot;mean&quot;: F}` — mean must be within ±0.01 of the true value.
+- Include `email` exactly as your logged-in address.
+
+**CORS policy**
+
+- Only your _assigned_ allowed origin (shown above) must receive the `Access-Control-Allow-Origin` header — no wildcards (`*`).
+- Preflight `OPTIONS /stats` from the allowed origin must succeed (return ACAO header); preflights from any other origin must be rejected (no ACAO header).
+
+**Required middleware headers** — every response must carry:
+
+- `X-Request-ID`: a unique identifier for this request (e.g. a UUID).
+- `X-Process-Time`: the handler duration in seconds as a non-negative decimal number (e.g. `0.001234`).
+
+**What the grader checks**
+
+1. Preflight from the allowed origin — expects ACAO header.
+2. Preflight from a random evil origin — must receive no ACAO header.
+3. `GET /stats?values=…` with a fresh random batch — checks all five stat fields plus `email`, `X-Request-ID`, and `X-Process-Time`.
+
+Deploy to any public host (Vercel, Render, Fly.io, Cloudflare Workers, HF Spaces, etc.) and paste your base URL below. 
+
+**Your deployed service base URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-oauth-jwks-verify-server" id="hq-oauth-jwks-verify-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->4</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->OAuth 2.0 / OIDC Token Verification Service (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        A mock identity provider (IdP) issues <strong>RS256 JWTs</strong>. Deploy a
+        <strong>FastAPI</strong> <code>POST /verify</code> endpoint that validates an incoming token
+        and returns a structured result. The grader mints a fresh set of valid, expired,
+        wrong-audience, and tampered tokens on every check.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned values</div>
+        <div style="display:grid;gap:10px">
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Issuer (iss)</span><br>
+            <code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->https://idp.exam.local</code>
+          </div>
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Audience (aud)</span><br>
+            <code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->tds-wbk7ikg9.apps.exam.local</code>
+          </div>
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">IdP public key (RS256)</span>
+            <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px 10px; border-radius: 4px; font-size: 0.78rem; margin: 4px 0px 0px; white-space: pre-wrap; word-break: break-all; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color=""><!--?lit$646114207$-->-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2okOHspNjgA+2rTLbeuY
+cxiP/hG8C6Sb9iwg3yiLAA4HCnpITcbWCSelbvbYGuc3EbNy4xFyf5Cbj5DHJMID
+EkryOgyd2giIIIBOUBj8S63uGcnRpOBh9NFatfNwheKuzsPuVNldu6A9cNteNpXc
+WyJjG2axVfmq7i6SuKr1JoWYG7xTTAvKPujSl4OtsQfO3h5NepzdfXpr28oNnzfW
+ed+zclR6BcmNNo/WVfJ4xyCLSf0BCOgdTgW6PdaChd1l9VDetJZVEgC5tkyvXsfI
+SI6iyrYbKR0NEBSqq4XkadEjsCs4F1RncsS4LlgniT7GlkL9Mce3b0wGLs9/7ZIX
+dQIDAQAB
+-----END PUBLIC KEY-----</pre>
+          </div>
+        </div>
+      </div>
+
+      <p><strong>Endpoint: <code>POST /verify</code></strong></p>
+      <ul>
+        <li>Request body: <code>{"token": "&lt;JWT string&gt;"}</code></li>
+        <li>
+          On a <strong>valid token</strong>: respond <code>200</code> with
+          <code>{"valid": true, "email": "…", "sub": "…", "aud": "…"}</code> — echo the claims from
+          inside the token.
+        </li>
+        <li>
+          On <strong>any invalid token</strong>: respond with a non-200 status (401 recommended) and
+          <code>{"valid": false}</code>.
+        </li>
+      </ul>
+
+      <p><strong>Verification rules — reject the token if any of these fail:</strong></p>
+      <ol>
+        <li><strong>Signature</strong> — must verify against the RS256 public key shown above.</li>
+        <li><strong>Issuer (<code>iss</code>)</strong> — must equal <code><!--?lit$646114207$-->https://idp.exam.local</code>.</li>
+        <li><strong>Audience (<code>aud</code>)</strong> — must equal <code><!--?lit$646114207$-->tds-wbk7ikg9.apps.exam.local</code>.</li>
+        <li><strong>Expiry (<code>exp</code>)</strong> — must be in the future.</li>
+      </ol>
+
+      <p><strong>What the grader checks (four probe tokens per verify call):</strong></p>
+      <ol>
+        <li>A freshly minted valid token → must return 200 + <code>valid: true</code> with correct claims.</li>
+        <li>An expired token (exp in the past) → must be rejected.</li>
+        <li>A token with the wrong audience → must be rejected.</li>
+        <li>A token with a tampered payload and invalid signature → must be rejected.</li>
+      </ol>
+
+      <p>
+        Deploy to any public host and paste your <code>/verify</code> endpoint URL below
+        (include the full path, e.g. <code>https://my-app.example.com/verify</code>).
+      </p>
+      <label class="form-label" for="q-oauth-jwks-verify-server"><strong>Your deployed /verify endpoint URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-oauth.example.workers.dev/verify" id="q-oauth-jwks-verify-server" name="q-oauth-jwks-verify-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-oauth-jwks-verify-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/421" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A4%20OAuth%202.0%20%2F%20OIDC%20Token%20Verification%20Service%20(2%20marks)%20Solved%20%0A%0AA%20mock%20identity%20provider%20(IdP)%20issues%20**RS256%20JWTs**.%20Deploy%20a%20**FastAPI**%20%60POST%20%2Fverify%60%20endpoint%20that%20validates%20an%20incoming%20token%20and%20returns%20a%20structured%20result.%20The%20grader%20mints%20a%20fresh%20set%20of%20valid%2C%20expired%2C%20wrong-audience%2C%20and%20tampered%20tokens%20on%20every%20check.%20%0A%0AYour%20assigned%20values%0A%0AIssuer%20(iss)%20%20%0A%60https%3A%2F%2Fidp.exam.local%60%20%0A%0AAudience%20(aud)%20%20%0A%60tds-wbk7ikg9.apps.exam.local%60%20%0A%0AIdP%20public%20key%20(RS256)%20%0A%0A-----BEGIN%20PUBLIC%20KEY-----%0AMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2okOHspNjgA%2B2rTLbeuY%0AcxiP%2FhG8C6Sb9iwg3yiLAA4HCnpITcbWCSelbvbYGuc3EbNy4xFyf5Cbj5DHJMID%0AEkryOgyd2giIIIBOUBj8S63uGcnRpOBh9NFatfNwheKuzsPuVNldu6A9cNteNpXc%0AWyJjG2axVfmq7i6SuKr1JoWYG7xTTAvKPujSl4OtsQfO3h5NepzdfXpr28oNnzfW%0Aed%2BzclR6BcmNNo%2FWVfJ4xyCLSf0BCOgdTgW6PdaChd1l9VDetJZVEgC5tkyvXsfI%0ASI6iyrYbKR0NEBSqq4XkadEjsCs4F1RncsS4LlgniT7GlkL9Mce3b0wGLs9%2F7ZIX%0AdQIDAQAB%0A-----END%20PUBLIC%20KEY-----%0A%0A**Endpoint%3A%20%60POST%20%2Fverify%60**%0A%0A-%20Request%20body%3A%20%60%7B%22token%22%3A%20%22%3CJWT%20string%3E%22%7D%60%0A-%20On%20a%20**valid%20token**%3A%20respond%20%60200%60%20with%20%60%7B%22valid%22%3A%20true%2C%20%22email%22%3A%20%22%E2%80%A6%22%2C%20%22sub%22%3A%20%22%E2%80%A6%22%2C%20%22aud%22%3A%20%22%E2%80%A6%22%7D%60%20%E2%80%94%20echo%20the%20claims%20from%20inside%20the%20token.%0A-%20On%20**any%20invalid%20token**%3A%20respond%20with%20a%20non-200%20status%20(401%20recommended)%20and%20%60%7B%22valid%22%3A%20false%7D%60.%0A%0A**Verification%20rules%20%E2%80%94%20reject%20the%20token%20if%20any%20of%20these%20fail%3A**%0A%0A1.%20**Signature**%20%E2%80%94%20must%20verify%20against%20the%20RS256%20public%20key%20shown%20above.%0A2.%20**Issuer%20(%60iss%60)**%20%E2%80%94%20must%20equal%20%60https%3A%2F%2Fidp.exam.local%60.%0A3.%20**Audience%20(%60aud%60)**%20%E2%80%94%20must%20equal%20%60tds-wbk7ikg9.apps.exam.local%60.%0A4.%20**Expiry%20(%60exp%60)**%20%E2%80%94%20must%20be%20in%20the%20future.%0A%0A**What%20the%20grader%20checks%20(four%20probe%20tokens%20per%20verify%20call)%3A**%0A%0A1.%20A%20freshly%20minted%20valid%20token%20%E2%86%92%20must%20return%20200%20%2B%20%60valid%3A%20true%60%20with%20correct%20claims.%0A2.%20An%20expired%20token%20(exp%20in%20the%20past)%20%E2%86%92%20must%20be%20rejected.%0A3.%20A%20token%20with%20the%20wrong%20audience%20%E2%86%92%20must%20be%20rejected.%0A4.%20A%20token%20with%20a%20tampered%20payload%20and%20invalid%20signature%20%E2%86%92%20must%20be%20rejected.%0A%0ADeploy%20to%20any%20public%20host%20and%20paste%20your%20%60%2Fverify%60%20endpoint%20URL%20below%20(include%20the%20full%20path%2C%20e.g.%20%60https%3A%2F%2Fmy-app.example.com%2Fverify%60).%20%0A%0A**Your%20deployed%20%2Fverify%20endpoint%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+4 OAuth 2.0 / OIDC Token Verification Service (2 marks) Solved 
+
+A mock identity provider (IdP) issues **RS256 JWTs**. Deploy a **FastAPI** `POST /verify` endpoint that validates an incoming token and returns a structured result. The grader mints a fresh set of valid, expired, wrong-audience, and tampered tokens on every check. 
+
+Your assigned values
+
+Issuer (iss)  
+`https://idp.exam.local` 
+
+Audience (aud)  
+`tds-wbk7ikg9.apps.exam.local` 
+
+IdP public key (RS256) 
+
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2okOHspNjgA+2rTLbeuY
+cxiP/hG8C6Sb9iwg3yiLAA4HCnpITcbWCSelbvbYGuc3EbNy4xFyf5Cbj5DHJMID
+EkryOgyd2giIIIBOUBj8S63uGcnRpOBh9NFatfNwheKuzsPuVNldu6A9cNteNpXc
+WyJjG2axVfmq7i6SuKr1JoWYG7xTTAvKPujSl4OtsQfO3h5NepzdfXpr28oNnzfW
+ed+zclR6BcmNNo/WVfJ4xyCLSf0BCOgdTgW6PdaChd1l9VDetJZVEgC5tkyvXsfI
+SI6iyrYbKR0NEBSqq4XkadEjsCs4F1RncsS4LlgniT7GlkL9Mce3b0wGLs9/7ZIX
+dQIDAQAB
+-----END PUBLIC KEY-----
+
+**Endpoint: `POST /verify`**
+
+- Request body: `{&quot;token&quot;: &quot;&lt;JWT string&gt;&quot;}`
+- On a **valid token**: respond `200` with `{&quot;valid&quot;: true, &quot;email&quot;: &quot;…&quot;, &quot;sub&quot;: &quot;…&quot;, &quot;aud&quot;: &quot;…&quot;}` — echo the claims from inside the token.
+- On **any invalid token**: respond with a non-200 status (401 recommended) and `{&quot;valid&quot;: false}`.
+
+**Verification rules — reject the token if any of these fail:**
+
+1. **Signature** — must verify against the RS256 public key shown above.
+2. **Issuer (`iss`)** — must equal `https://idp.exam.local`.
+3. **Audience (`aud`)** — must equal `tds-wbk7ikg9.apps.exam.local`.
+4. **Expiry (`exp`)** — must be in the future.
+
+**What the grader checks (four probe tokens per verify call):**
+
+1. A freshly minted valid token → must return 200 + `valid: true` with correct claims.
+2. An expired token (exp in the past) → must be rejected.
+3. A token with the wrong audience → must be rejected.
+4. A token with a tampered payload and invalid signature → must be rejected.
+
+Deploy to any public host and paste your `/verify` endpoint URL below (include the full path, e.g. `https://my-app.example.com/verify`). 
+
+**Your deployed /verify endpoint URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-config-precedence-server" id="hq-config-precedence-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->5</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Resolve 12-Factor Config Precedence (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Deploy a <strong>FastAPI</strong> service that merges four configuration layers — defaults,
+        environment-specific YAML, <code>.env</code> file, and OS-level environment variables — then
+        applies <strong>CLI overrides</strong> passed as query parameters. The grader sends fresh
+        random overrides on every check.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned config layers</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">1. defaults (hardcoded)</span>
+            <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px 10px; border-radius: 4px; font-size: 0.82rem; margin: 4px 0px 0px; white-space: pre; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color="">port: 8000
+workers: 1
+debug: false
+log_level: info
+api_key: default-secret-000</pre>
+          </div>
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">2. config.development.yaml</span>
+            <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px 10px; border-radius: 4px; font-size: 0.82rem; margin: 4px 0px 0px; white-space: pre; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color=""><!--?lit$646114207$-->workers: 9
+debug: true</pre>
+          </div>
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">3. .env file</span>
+            <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px 10px; border-radius: 4px; font-size: 0.82rem; margin: 4px 0px 0px; white-space: pre; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color=""><!--?lit$646114207$-->APP_PORT=8357
+NUM_WORKERS=10
+APP_API_KEY=key-z1vkaft4fq</pre>
+          </div>
+          <div>
+            <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">4. OS env vars (APP_* prefix)</span>
+            <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px 10px; border-radius: 4px; font-size: 0.82rem; margin: 4px 0px 0px; white-space: pre; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color=""><!--?lit$646114207$-->APP_PORT=8093
+APP_WORKERS=1
+APP_LOG_LEVEL=debug
+APP_API_KEY=key-sfs3a25lwh</pre>
+          </div>
+        </div>
+      </div>
+
+      <p><strong>Endpoint: <code>GET /effective-config?set=key=value&amp;set=…</code></strong></p>
+      <ul>
+        <li>
+          Merge the four config layers from low to high precedence:
+          <strong>defaults → config.&lt;env&gt;.yaml → .env → OS env (APP_* prefix)</strong>.
+        </li>
+        <li>
+          Apply any <code>?set=key=value</code> query parameters as the highest-precedence CLI overrides.
+          Multiple <code>set</code> params are allowed.
+        </li>
+        <li>
+          Return JSON: <code>{"port": 8000, "workers": 2, "debug": false, "log_level": "info",
+          "api_key": "****"}</code>
+        </li>
+      </ul>
+
+      <p><strong>Type coercion rules:</strong></p>
+      <ul>
+        <li><code>port</code>, <code>workers</code> → integer</li>
+        <li><code>debug</code> → boolean (<code>true/1/yes/on</code> case-insensitive = <code>true</code>)</li>
+        <li><code>log_level</code> and all other keys → string</li>
+      </ul>
+
+      <p><strong>Special cases:</strong></p>
+      <ul>
+        <li>
+          <strong>Alias:</strong> <code>NUM_WORKERS</code> in the <code>.env</code> layer maps to the
+          <code>workers</code> key.
+        </li>
+        <li>
+          <strong>Secret masking:</strong> <code>api_key</code> must always appear as <code>"****"</code>
+          in the response — never expose the real value.
+        </li>
+        <li>
+          <strong>CORS:</strong> your service must allow cross-origin requests from this page so the
+          browser can check it directly.
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li>All five keys present with correct types (port as int, debug as bool, etc.).</li>
+        <li>Alias <code>NUM_WORKERS → workers</code> correctly resolved.</li>
+        <li><code>api_key</code> masked as <code>"****"</code>.</li>
+        <li>
+          Fresh CLI overrides (e.g. <code>?set=port=9000&amp;set=debug=true</code>) applied correctly
+          with highest precedence.
+        </li>
+      </ol>
+
+      <p>Deploy and paste your <code>/effective-config</code> endpoint URL below.</p>
+      <label class="form-label" for="q-config-precedence-server"><strong>Your deployed /effective-config endpoint URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-config.example.workers.dev/effective-config" id="q-config-precedence-server" name="q-config-precedence-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-config-precedence-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/416" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A5%20Resolve%2012-Factor%20Config%20Precedence%20(1%20mark)%20Solved%20%0A%0ADeploy%20a%20**FastAPI**%20service%20that%20merges%20four%20configuration%20layers%20%E2%80%94%20defaults%2C%20environment-specific%20YAML%2C%20%60.env%60%20file%2C%20and%20OS-level%20environment%20variables%20%E2%80%94%20then%20applies%20**CLI%20overrides**%20passed%20as%20query%20parameters.%20The%20grader%20sends%20fresh%20random%20overrides%20on%20every%20check.%20%0A%0AYour%20assigned%20config%20layers%0A%0A1%5C.%20defaults%20(hardcoded)%20%0A%0Aport%3A%208000%0Aworkers%3A%201%0Adebug%3A%20false%0Alog_level%3A%20info%0Aapi_key%3A%20default-secret-000%0A%0A2%5C.%20config.development.yaml%20%0A%0Aworkers%3A%209%0Adebug%3A%20true%0A%0A3%5C.%20.env%20file%20%0A%0AAPP_PORT%3D8357%0ANUM_WORKERS%3D10%0AAPP_API_KEY%3Dkey-z1vkaft4fq%0A%0A4%5C.%20OS%20env%20vars%20(APP%5C_%5C*%20prefix)%20%0A%0AAPP_PORT%3D8093%0AAPP_WORKERS%3D1%0AAPP_LOG_LEVEL%3Ddebug%0AAPP_API_KEY%3Dkey-sfs3a25lwh%0A%0A**Endpoint%3A%20%60GET%20%2Feffective-config%3Fset%3Dkey%3Dvalue%26set%3D%E2%80%A6%60**%0A%0A-%20Merge%20the%20four%20config%20layers%20from%20low%20to%20high%20precedence%3A%20**defaults%20%E2%86%92%20config.%3Cenv%3E.yaml%20%E2%86%92%20.env%20%E2%86%92%20OS%20env%20(APP%5C_%5C*%20prefix)**.%0A-%20Apply%20any%20%60%3Fset%3Dkey%3Dvalue%60%20query%20parameters%20as%20the%20highest-precedence%20CLI%20overrides.%20Multiple%20%60set%60%20params%20are%20allowed.%0A-%20Return%20JSON%3A%20%60%7B%22port%22%3A%208000%2C%20%22workers%22%3A%202%2C%20%22debug%22%3A%20false%2C%20%22log_level%22%3A%20%22info%22%2C%20%22api_key%22%3A%20%22****%22%7D%60%0A%0A**Type%20coercion%20rules%3A**%0A%0A-%20%60port%60%2C%20%60workers%60%20%E2%86%92%20integer%0A-%20%60debug%60%20%E2%86%92%20boolean%20(%60true%2F1%2Fyes%2Fon%60%20case-insensitive%20%3D%20%60true%60)%0A-%20%60log_level%60%20and%20all%20other%20keys%20%E2%86%92%20string%0A%0A**Special%20cases%3A**%0A%0A-%20**Alias%3A**%20%60NUM_WORKERS%60%20in%20the%20%60.env%60%20layer%20maps%20to%20the%20%60workers%60%20key.%0A-%20**Secret%20masking%3A**%20%60api_key%60%20must%20always%20appear%20as%20%60%22****%22%60in%20the%20response%20%E2%80%94%20never%20expose%20the%20real%20value.%0A-%20**CORS%3A**%20your%20service%20must%20allow%20cross-origin%20requests%20from%20this%20page%20so%20the%20browser%20can%20check%20it%20directly.%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20All%20five%20keys%20present%20with%20correct%20types%20(port%20as%20int%2C%20debug%20as%20bool%2C%20etc.).%0A2.%20Alias%20%60NUM_WORKERS%20%E2%86%92%20workers%60%20correctly%20resolved.%0A3.%20%60api_key%60%20masked%20as%20%60%22****%22%60.%0A4.%20Fresh%20CLI%20overrides%20(e.g.%20%60%3Fset%3Dport%3D9000%26set%3Ddebug%3Dtrue%60)%20applied%20correctly%20with%20highest%20precedence.%0A%0ADeploy%20and%20paste%20your%20%60%2Feffective-config%60%20endpoint%20URL%20below.%0A%0A**Your%20deployed%20%2Feffective-config%20endpoint%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+5 Resolve 12-Factor Config Precedence (1 mark) Solved 
+
+Deploy a **FastAPI** service that merges four configuration layers — defaults, environment-specific YAML, `.env` file, and OS-level environment variables — then applies **CLI overrides** passed as query parameters. The grader sends fresh random overrides on every check. 
+
+Your assigned config layers
+
+1\. defaults (hardcoded) 
+
+port: 8000
+workers: 1
+debug: false
+log_level: info
+api_key: default-secret-000
+
+2\. config.development.yaml 
+
+workers: 9
+debug: true
+
+3\. .env file 
+
+APP_PORT=8357
+NUM_WORKERS=10
+APP_API_KEY=key-z1vkaft4fq
+
+4\. OS env vars (APP\_\* prefix) 
+
+APP_PORT=8093
+APP_WORKERS=1
+APP_LOG_LEVEL=debug
+APP_API_KEY=key-sfs3a25lwh
+
+**Endpoint: `GET /effective-config?set=key=value&amp;set=…`**
+
+- Merge the four config layers from low to high precedence: **defaults → config.&lt;env&gt;.yaml → .env → OS env (APP\_\* prefix)**.
+- Apply any `?set=key=value` query parameters as the highest-precedence CLI overrides. Multiple `set` params are allowed.
+- Return JSON: `{&quot;port&quot;: 8000, &quot;workers&quot;: 2, &quot;debug&quot;: false, &quot;log_level&quot;: &quot;info&quot;, &quot;api_key&quot;: &quot;****&quot;}`
+
+**Type coercion rules:**
+
+- `port`, `workers` → integer
+- `debug` → boolean (`true/1/yes/on` case-insensitive = `true`)
+- `log_level` and all other keys → string
+
+**Special cases:**
+
+- **Alias:** `NUM_WORKERS` in the `.env` layer maps to the `workers` key.
+- **Secret masking:** `api_key` must always appear as `&quot;****&quot;`in the response — never expose the real value.
+- **CORS:** your service must allow cross-origin requests from this page so the browser can check it directly.
+
+**What the grader checks:**
+
+1. All five keys present with correct types (port as int, debug as bool, etc.).
+2. Alias `NUM_WORKERS → workers` correctly resolved.
+3. `api_key` masked as `&quot;****&quot;`.
+4. Fresh CLI overrides (e.g. `?set=port=9000&amp;set=debug=true`) applied correctly with highest precedence.
+
+Deploy and paste your `/effective-config` endpoint URL below.
+
+**Your deployed /effective-config endpoint URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-compose-redis-tunnel-server" id="hq-compose-redis-tunnel-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->6</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Multi-Container App via Compose, Exposed by Tunnel (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Run a <code>docker compose</code> stack that pairs a <strong>FastAPI</strong> API service with a
+        <strong>Redis</strong> backend, then expose the API over a public tunnel. The grader hits your
+        live service with random hit sequences and expects Redis-backed persistence.
+      </p>
+
+      <p><strong>Services in your <code>docker-compose.yml</code>:</strong></p>
+      <ul>
+        <li><code>api</code> — FastAPI app that talks to redis over the internal compose network.</li>
+        <li><code>redis</code> — standard Redis image; no external port needed.</li>
+      </ul>
+
+      <p><strong>Endpoints your API must expose:</strong></p>
+      <ul>
+        <li>
+          <code>POST /hit/{key}</code> — atomically increment a Redis counter for
+          <code>key</code> and return <code>{"key": "…", "count": N}</code>.
+        </li>
+        <li>
+          <code>GET /count/{key}</code> — return the current counter value
+          (<code>{"key": "…", "count": N}</code>); return 0 for an unseen key.
+        </li>
+        <li>
+          <code>GET /healthz</code> — return <code>{"status": "ok", "redis": "up"}</code>;
+          actually ping Redis (not a static response).
+        </li>
+      </ul>
+
+      <p><strong>Correctness requirements:</strong></p>
+      <ul>
+        <li>Use Redis <code>INCR</code> — not an in-memory Python dict — so counts survive worker restarts.</li>
+        <li>Each key must maintain its own independent counter.</li>
+        <li>The count after K hits must equal exactly K.</li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li><code>GET /healthz</code> → <code>{"status": "ok", "redis": "up"}</code>.</li>
+        <li>
+          A random sequence of <code>POST /hit/{key}</code> calls across two different keys, then
+          <code>GET /count/{key}</code> for each — counts must match exactly.
+        </li>
+        <li>Two different keys must maintain independent counters.</li>
+      </ol>
+
+      <p>
+        Expose your <code>api</code> service via a tunnel (<code>cloudflared tunnel --url
+        http://localhost:8000</code> or <code>lt --port 8000</code>) and paste the tunnel base URL.
+      </p>
+      <label class="form-label" for="q-compose-redis-tunnel-server"><strong>Your public tunnel base URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-stack.trycloudflare.com" id="q-compose-redis-tunnel-server" name="q-compose-redis-tunnel-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-compose-redis-tunnel-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/415" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A6%20Multi-Container%20App%20via%20Compose%2C%20Exposed%20by%20Tunnel%20(2%20marks)%20Solved%20%0A%0ARun%20a%20%60docker%20compose%60%20stack%20that%20pairs%20a%20**FastAPI**%20API%20service%20with%20a%20**Redis**%20backend%2C%20then%20expose%20the%20API%20over%20a%20public%20tunnel.%20The%20grader%20hits%20your%20live%20service%20with%20random%20hit%20sequences%20and%20expects%20Redis-backed%20persistence.%20%0A%0A**Services%20in%20your%20%60docker-compose.yml%60%3A**%0A%0A-%20%60api%60%20%E2%80%94%20FastAPI%20app%20that%20talks%20to%20redis%20over%20the%20internal%20compose%20network.%0A-%20%60redis%60%20%E2%80%94%20standard%20Redis%20image%3B%20no%20external%20port%20needed.%0A%0A**Endpoints%20your%20API%20must%20expose%3A**%0A%0A-%20%60POST%20%2Fhit%2F%7Bkey%7D%60%20%E2%80%94%20atomically%20increment%20a%20Redis%20counter%20for%20%60key%60%20and%20return%20%60%7B%22key%22%3A%20%22%E2%80%A6%22%2C%20%22count%22%3A%20N%7D%60.%0A-%20%60GET%20%2Fcount%2F%7Bkey%7D%60%20%E2%80%94%20return%20the%20current%20counter%20value%20(%60%7B%22key%22%3A%20%22%E2%80%A6%22%2C%20%22count%22%3A%20N%7D%60)%3B%20return%200%20for%20an%20unseen%20key.%0A-%20%60GET%20%2Fhealthz%60%20%E2%80%94%20return%20%60%7B%22status%22%3A%20%22ok%22%2C%20%22redis%22%3A%20%22up%22%7D%60%3B%20actually%20ping%20Redis%20(not%20a%20static%20response).%0A%0A**Correctness%20requirements%3A**%0A%0A-%20Use%20Redis%20%60INCR%60%20%E2%80%94%20not%20an%20in-memory%20Python%20dict%20%E2%80%94%20so%20counts%20survive%20worker%20restarts.%0A-%20Each%20key%20must%20maintain%20its%20own%20independent%20counter.%0A-%20The%20count%20after%20K%20hits%20must%20equal%20exactly%20K.%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20%60GET%20%2Fhealthz%60%20%E2%86%92%20%60%7B%22status%22%3A%20%22ok%22%2C%20%22redis%22%3A%20%22up%22%7D%60.%0A2.%20A%20random%20sequence%20of%20%60POST%20%2Fhit%2F%7Bkey%7D%60%20calls%20across%20two%20different%20keys%2C%20then%20%60GET%20%2Fcount%2F%7Bkey%7D%60%20for%20each%20%E2%80%94%20counts%20must%20match%20exactly.%0A3.%20Two%20different%20keys%20must%20maintain%20independent%20counters.%0A%0AExpose%20your%20%60api%60%20service%20via%20a%20tunnel%20(%60cloudflared%20tunnel%20--url%20http%3A%2F%2Flocalhost%3A8000%60%20or%20%60lt%20--port%208000%60)%20and%20paste%20the%20tunnel%20base%20URL.%20%0A%0A**Your%20public%20tunnel%20base%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+6 Multi-Container App via Compose, Exposed by Tunnel (2 marks) Solved 
+
+Run a `docker compose` stack that pairs a **FastAPI** API service with a **Redis** backend, then expose the API over a public tunnel. The grader hits your live service with random hit sequences and expects Redis-backed persistence. 
+
+**Services in your `docker-compose.yml`:**
+
+- `api` — FastAPI app that talks to redis over the internal compose network.
+- `redis` — standard Redis image; no external port needed.
+
+**Endpoints your API must expose:**
+
+- `POST /hit/{key}` — atomically increment a Redis counter for `key` and return `{&quot;key&quot;: &quot;…&quot;, &quot;count&quot;: N}`.
+- `GET /count/{key}` — return the current counter value (`{&quot;key&quot;: &quot;…&quot;, &quot;count&quot;: N}`); return 0 for an unseen key.
+- `GET /healthz` — return `{&quot;status&quot;: &quot;ok&quot;, &quot;redis&quot;: &quot;up&quot;}`; actually ping Redis (not a static response).
+
+**Correctness requirements:**
+
+- Use Redis `INCR` — not an in-memory Python dict — so counts survive worker restarts.
+- Each key must maintain its own independent counter.
+- The count after K hits must equal exactly K.
+
+**What the grader checks:**
+
+1. `GET /healthz` → `{&quot;status&quot;: &quot;ok&quot;, &quot;redis&quot;: &quot;up&quot;}`.
+2. A random sequence of `POST /hit/{key}` calls across two different keys, then `GET /count/{key}` for each — counts must match exactly.
+3. Two different keys must maintain independent counters.
+
+Expose your `api` service via a tunnel (`cloudflared tunnel --url http://localhost:8000` or `lt --port 8000`) and paste the tunnel base URL. 
+
+**Your public tunnel base URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-deploy-analytics-platform-server" id="hq-deploy-analytics-platform-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->7</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Deploy a POST Analytics Endpoint (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Deploy a stateless <code>POST /analytics</code> endpoint that authenticates via your assigned API
+        key and aggregates a batch of events. The grader sends a fresh randomized
+        event batch on every check — you must compute results, not hard-code them.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned values</div>
+        <div>
+          <span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">API Key <code style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">(X-API-Key header)</code></span><br>
+          <code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->ak_mjie8v7pczop4xmdcah6b8kq</code>
+        </div>
+      </div>
+
+      <p><strong>Endpoint: <code>POST /analytics</code></strong></p>
+      <ul>
+        <li>
+          <strong>Auth:</strong> require header <code>X-API-Key: &lt;your-assigned-key&gt;</code>.
+          Missing or wrong key → HTTP 401.
+        </li>
+        <li>
+          <strong>Request body:</strong>
+          <code>{"events": [{"user": "alice", "amount": 42.5, "ts": 1700000000}, …]}</code>
+        </li>
+        <li>
+          <strong>Response:</strong>
+          <code>{"email": "…", "total_events": N, "unique_users": N, "revenue": F, "top_user": "…"}</code>
+        </li>
+        <li>
+          <strong>CORS:</strong> your endpoint must allow cross-origin requests from this page so the
+          browser can verify it directly (set <code>Access-Control-Allow-Origin: *</code> or the exam
+          domain).
+        </li>
+      </ul>
+
+      <p><strong>Aggregation rules:</strong></p>
+      <ul>
+        <li><code>total_events</code> — count of all events in the batch.</li>
+        <li><code>unique_users</code> — number of distinct <code>user</code> values.</li>
+        <li>
+          <code>revenue</code> — sum of <code>amount</code> values where <code>amount &gt; 0</code>
+          only (ignore zero and negative amounts).
+        </li>
+        <li>
+          <code>top_user</code> — the user whose positive-amount total is highest. The grader ensures
+          there are no ties.
+        </li>
+        <li><code>email</code> — your logged-in email address.</li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li>Missing API key → 401.</li>
+        <li>Wrong API key → 401.</li>
+        <li>
+          Valid key with a fresh 8-17 event batch (4-7 users, mixed positive/negative amounts) —
+          checks all five response fields.
+        </li>
+      </ol>
+
+      <p>Deploy to any public platform and paste your <code>/analytics</code> endpoint URL below.</p>
+      <label class="form-label" for="q-deploy-analytics-platform-server"><strong>Your deployed /analytics endpoint URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-app.vercel.app/analytics" id="q-deploy-analytics-platform-server" name="q-deploy-analytics-platform-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-deploy-analytics-platform-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/417" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A7%20Deploy%20a%20POST%20Analytics%20Endpoint%20(1.5%20marks)%20Solved%20%0A%0ADeploy%20a%20stateless%20%60POST%20%2Fanalytics%60%20endpoint%20that%20authenticates%20via%20your%20assigned%20API%20key%20and%20aggregates%20a%20batch%20of%20events.%20The%20grader%20sends%20a%20fresh%20randomized%20event%20batch%20on%20every%20check%20%E2%80%94%20you%20must%20compute%20results%2C%20not%20hard-code%20them.%20%0A%0AYour%20assigned%20values%0A%0AAPI%20Key%20%60(X-API-Key%20header)%60%20%20%0A%60ak_mjie8v7pczop4xmdcah6b8kq%60%20%0A%0A**Endpoint%3A%20%60POST%20%2Fanalytics%60**%0A%0A-%20**Auth%3A**%20require%20header%20%60X-API-Key%3A%20%3Cyour-assigned-key%3E%60.%20Missing%20or%20wrong%20key%20%E2%86%92%20HTTP%20401%5C.%0A-%20**Request%20body%3A**%20%60%7B%22events%22%3A%20%5B%7B%22user%22%3A%20%22alice%22%2C%20%22amount%22%3A%2042.5%2C%20%22ts%22%3A%201700000000%7D%2C%20%E2%80%A6%5D%7D%60%0A-%20**Response%3A**%20%60%7B%22email%22%3A%20%22%E2%80%A6%22%2C%20%22total_events%22%3A%20N%2C%20%22unique_users%22%3A%20N%2C%20%22revenue%22%3A%20F%2C%20%22top_user%22%3A%20%22%E2%80%A6%22%7D%60%0A-%20**CORS%3A**%20your%20endpoint%20must%20allow%20cross-origin%20requests%20from%20this%20page%20so%20the%20browser%20can%20verify%20it%20directly%20(set%20%60Access-Control-Allow-Origin%3A%20*%60%20or%20the%20exam%20domain).%0A%0A**Aggregation%20rules%3A**%0A%0A-%20%60total_events%60%20%E2%80%94%20count%20of%20all%20events%20in%20the%20batch.%0A-%20%60unique_users%60%20%E2%80%94%20number%20of%20distinct%20%60user%60%20values.%0A-%20%60revenue%60%20%E2%80%94%20sum%20of%20%60amount%60%20values%20where%20%60amount%20%3E%200%60only%20(ignore%20zero%20and%20negative%20amounts).%0A-%20%60top_user%60%20%E2%80%94%20the%20user%20whose%20positive-amount%20total%20is%20highest.%20The%20grader%20ensures%20there%20are%20no%20ties.%0A-%20%60email%60%20%E2%80%94%20your%20logged-in%20email%20address.%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20Missing%20API%20key%20%E2%86%92%20401.%0A2.%20Wrong%20API%20key%20%E2%86%92%20401.%0A3.%20Valid%20key%20with%20a%20fresh%208-17%20event%20batch%20(4-7%20users%2C%20mixed%20positive%2Fnegative%20amounts)%20%E2%80%94%20checks%20all%20five%20response%20fields.%0A%0ADeploy%20to%20any%20public%20platform%20and%20paste%20your%20%60%2Fanalytics%60%20endpoint%20URL%20below.%0A%0A**Your%20deployed%20%2Fanalytics%20endpoint%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+7 Deploy a POST Analytics Endpoint (1.5 marks) Solved 
+
+Deploy a stateless `POST /analytics` endpoint that authenticates via your assigned API key and aggregates a batch of events. The grader sends a fresh randomized event batch on every check — you must compute results, not hard-code them. 
+
+Your assigned values
+
+API Key `(X-API-Key header)`  
+`ak_mjie8v7pczop4xmdcah6b8kq` 
+
+**Endpoint: `POST /analytics`**
+
+- **Auth:** require header `X-API-Key: &lt;your-assigned-key&gt;`. Missing or wrong key → HTTP 401\.
+- **Request body:** `{&quot;events&quot;: [{&quot;user&quot;: &quot;alice&quot;, &quot;amount&quot;: 42.5, &quot;ts&quot;: 1700000000}, …]}`
+- **Response:** `{&quot;email&quot;: &quot;…&quot;, &quot;total_events&quot;: N, &quot;unique_users&quot;: N, &quot;revenue&quot;: F, &quot;top_user&quot;: &quot;…&quot;}`
+- **CORS:** your endpoint must allow cross-origin requests from this page so the browser can verify it directly (set `Access-Control-Allow-Origin: *` or the exam domain).
+
+**Aggregation rules:**
+
+- `total_events` — count of all events in the batch.
+- `unique_users` — number of distinct `user` values.
+- `revenue` — sum of `amount` values where `amount &gt; 0`only (ignore zero and negative amounts).
+- `top_user` — the user whose positive-amount total is highest. The grader ensures there are no ties.
+- `email` — your logged-in email address.
+
+**What the grader checks:**
+
+1. Missing API key → 401.
+2. Wrong API key → 401.
+3. Valid key with a fresh 8-17 event batch (4-7 users, mixed positive/negative amounts) — checks all five response fields.
+
+Deploy to any public platform and paste your `/analytics` endpoint URL below.
+
+**Your deployed /analytics endpoint URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-observability-metrics-server" id="hq-observability-metrics-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->8</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Production Observability: Metrics, Health &amp; Structured Logs (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Deploy a <strong>FastAPI</strong> service instrumented with a Prometheus counter, a health
+        check endpoint, and structured JSON logs. The grader drives real traffic to <code>/work</code>
+        and then verifies that your counter actually increments and your logs record the requests.
+      </p>
+
+      <p><strong>Endpoints to implement:</strong></p>
+      <ul>
+        <li>
+          <code>GET /work?n=K</code> — do K units of work, return
+          <code>{"email": "…", "done": K}</code>. Each call must increment the request counter.
+        </li>
+        <li>
+          <code>GET /metrics</code> — Prometheus text format. Must expose a counter named
+          <code>http_requests_total</code> that increases with every request to any endpoint.
+        </li>
+        <li>
+          <code>GET /healthz</code> — return <code>{"status": "ok", "uptime_s": &lt;number&gt;}</code>
+          where <code>uptime_s</code> is a non-negative float representing seconds since startup.
+        </li>
+        <li>
+          <code>GET /logs/tail?limit=N</code> — return a JSON array of the last N log entries. Each
+          entry must be a JSON object with at minimum: <code>level</code>, <code>ts</code> (timestamp),
+          <code>path</code> (request path), <code>request_id</code>.
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li>
+          Reads <code>http_requests_total</code> from <code>/metrics</code> as a baseline, then makes
+          3-6 random calls to <code>/work?n=K</code>, then reads the counter again — it must have
+          increased by at least the number of calls made.
+        </li>
+        <li>
+          <code>/healthz</code> returns <code>status: "ok"</code> and a finite non-negative
+          <code>uptime_s</code>.
+        </li>
+        <li>
+          <code>/logs/tail</code> returns a valid JSON array where each object has the four required
+          fields, and at least one entry has <code>path</code> containing <code>/work</code>.
+        </li>
+      </ol>
+
+      <p>
+        The counter must be live — a static Prometheus text file that doesn't update will fail. Deploy
+        and paste your service base URL.
+      </p>
+      <label class="form-label" for="q-observability-metrics-server"><strong>Your deployed service base URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-observable.example.workers.dev" id="q-observability-metrics-server" name="q-observability-metrics-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-observability-metrics-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/422" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A8%20Production%20Observability%3A%20Metrics%2C%20Health%20%26%20Structured%20Logs%20(1.5%20marks)%20Solved%20%0A%0ADeploy%20a%20**FastAPI**%20service%20instrumented%20with%20a%20Prometheus%20counter%2C%20a%20health%20check%20endpoint%2C%20and%20structured%20JSON%20logs.%20The%20grader%20drives%20real%20traffic%20to%20%60%2Fwork%60and%20then%20verifies%20that%20your%20counter%20actually%20increments%20and%20your%20logs%20record%20the%20requests.%20%0A%0A**Endpoints%20to%20implement%3A**%0A%0A-%20%60GET%20%2Fwork%3Fn%3DK%60%20%E2%80%94%20do%20K%20units%20of%20work%2C%20return%20%60%7B%22email%22%3A%20%22%E2%80%A6%22%2C%20%22done%22%3A%20K%7D%60.%20Each%20call%20must%20increment%20the%20request%20counter.%0A-%20%60GET%20%2Fmetrics%60%20%E2%80%94%20Prometheus%20text%20format.%20Must%20expose%20a%20counter%20named%20%60http_requests_total%60%20that%20increases%20with%20every%20request%20to%20any%20endpoint.%0A-%20%60GET%20%2Fhealthz%60%20%E2%80%94%20return%20%60%7B%22status%22%3A%20%22ok%22%2C%20%22uptime_s%22%3A%20%3Cnumber%3E%7D%60where%20%60uptime_s%60%20is%20a%20non-negative%20float%20representing%20seconds%20since%20startup.%0A-%20%60GET%20%2Flogs%2Ftail%3Flimit%3DN%60%20%E2%80%94%20return%20a%20JSON%20array%20of%20the%20last%20N%20log%20entries.%20Each%20entry%20must%20be%20a%20JSON%20object%20with%20at%20minimum%3A%20%60level%60%2C%20%60ts%60%20(timestamp)%2C%20%60path%60%20(request%20path)%2C%20%60request_id%60.%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20Reads%20%60http_requests_total%60%20from%20%60%2Fmetrics%60%20as%20a%20baseline%2C%20then%20makes%203-6%20random%20calls%20to%20%60%2Fwork%3Fn%3DK%60%2C%20then%20reads%20the%20counter%20again%20%E2%80%94%20it%20must%20have%20increased%20by%20at%20least%20the%20number%20of%20calls%20made.%0A2.%20%60%2Fhealthz%60%20returns%20%60status%3A%20%22ok%22%60%20and%20a%20finite%20non-negative%20%60uptime_s%60.%0A3.%20%60%2Flogs%2Ftail%60%20returns%20a%20valid%20JSON%20array%20where%20each%20object%20has%20the%20four%20required%20fields%2C%20and%20at%20least%20one%20entry%20has%20%60path%60%20containing%20%60%2Fwork%60.%0A%0AThe%20counter%20must%20be%20live%20%E2%80%94%20a%20static%20Prometheus%20text%20file%20that%20doesn't%20update%20will%20fail.%20Deploy%20and%20paste%20your%20service%20base%20URL.%20%0A%0A**Your%20deployed%20service%20base%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+8 Production Observability: Metrics, Health &amp; Structured Logs (1.5 marks) Solved 
+
+Deploy a **FastAPI** service instrumented with a Prometheus counter, a health check endpoint, and structured JSON logs. The grader drives real traffic to `/work`and then verifies that your counter actually increments and your logs record the requests. 
+
+**Endpoints to implement:**
+
+- `GET /work?n=K` — do K units of work, return `{&quot;email&quot;: &quot;…&quot;, &quot;done&quot;: K}`. Each call must increment the request counter.
+- `GET /metrics` — Prometheus text format. Must expose a counter named `http_requests_total` that increases with every request to any endpoint.
+- `GET /healthz` — return `{&quot;status&quot;: &quot;ok&quot;, &quot;uptime_s&quot;: &lt;number&gt;}`where `uptime_s` is a non-negative float representing seconds since startup.
+- `GET /logs/tail?limit=N` — return a JSON array of the last N log entries. Each entry must be a JSON object with at minimum: `level`, `ts` (timestamp), `path` (request path), `request_id`.
+
+**What the grader checks:**
+
+1. Reads `http_requests_total` from `/metrics` as a baseline, then makes 3-6 random calls to `/work?n=K`, then reads the counter again — it must have increased by at least the number of calls made.
+2. `/healthz` returns `status: &quot;ok&quot;` and a finite non-negative `uptime_s`.
+3. `/logs/tail` returns a valid JSON array where each object has the four required fields, and at least one entry has `path` containing `/work`.
+
+The counter must be live — a static Prometheus text file that doesn't update will fail. Deploy and paste your service base URL. 
+
+**Your deployed service base URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-ollama-tunnel-llm-server" id="hq-ollama-tunnel-llm-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->9</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Expose a Local LLM through a Tunnel (<!--?lit$646114207$-->1 <!--?lit$646114207$-->mark)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Run a local LLM (e.g. <strong>Ollama</strong>) that exposes an
+        <strong>OpenAI-compatible</strong> chat completions endpoint, expose it via a public tunnel,
+        and submit the endpoint URL plus the model name. The grader sends two fresh prompts every check
+        — an echo test and an arithmetic test.
+      </p>
+
+      <p><strong>Required setup:</strong></p>
+      <ul>
+        <li>
+          Start Ollama (or any compatible server) so that
+          <code>POST /v1/chat/completions</code> is accessible at your tunnel URL.
+        </li>
+        <li>
+          Request format: <code>{"model": "…", "messages": [{"role": "user", "content": "…"}],
+          "stream": false}</code>
+        </li>
+        <li>
+          Response format: standard OpenAI structure — content is read from
+          <code>choices[0].message.content</code> (or <code>choices[0].text</code> / top-level
+          <code>response</code> as fallback).
+        </li>
+        <li>
+          Enable CORS on your tunnel so this page can reach it directly
+          (e.g. <code>OLLAMA_ORIGINS=*</code> for Ollama).
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li>
+          <strong>Echo test:</strong> asks the model to repeat a random token (format
+          <code>TK&lt;6-hex&gt;</code>). The token must appear somewhere in the response (case-insensitive).
+        </li>
+        <li>
+          <strong>Arithmetic test:</strong> asks "What is A + B?" with random integers (10-89). The
+          correct sum must appear as digits in the response.
+        </li>
+      </ol>
+
+      <p><strong>Submit as JSON:</strong></p>
+      <pre style="background: rgb(33, 37, 41); color: rgb(248, 249, 250); padding: 8px; border-radius: 4px; font-size: 0.85rem; --darkreader-inline-bgcolor: var(--darkreader-background-212529, #1c1e1f); --darkreader-inline-bgimage: none; --darkreader-inline-color: var(--darkreader-text-f8f9fa, #e4e2de);" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="" data-darkreader-inline-color="">{"url": "https://my-llm.trycloudflare.com/v1/chat/completions", "model": "llama3.2"}</pre>
+      <ul>
+        <li><code>url</code> — the full path to <code>/v1/chat/completions</code> at your tunnel.</li>
+        <li><code>model</code> — the exact model name your server is running.</li>
+      </ul>
+
+      <label class="form-label" for="q-ollama-tunnel-llm-server"><strong>Your endpoint + model as JSON</strong></label>
+      <textarea class="form-control font-monospace" rows="3" placeholder="{&quot;url&quot;: &quot;https://my-llm.trycloudflare.com/v1/chat/completions&quot;, &quot;model&quot;: &quot;llama3.2&quot;}" id="q-ollama-tunnel-llm-server" name="q-ollama-tunnel-llm-server"></textarea><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-ollama-tunnel-llm-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/423" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A9%20Expose%20a%20Local%20LLM%20through%20a%20Tunnel%20(1%20mark)%20Solved%20%0A%0ARun%20a%20local%20LLM%20(e.g.%20**Ollama**)%20that%20exposes%20an%20**OpenAI-compatible**%20chat%20completions%20endpoint%2C%20expose%20it%20via%20a%20public%20tunnel%2C%20and%20submit%20the%20endpoint%20URL%20plus%20the%20model%20name.%20The%20grader%20sends%20two%20fresh%20prompts%20every%20check%20%E2%80%94%20an%20echo%20test%20and%20an%20arithmetic%20test.%20%0A%0A**Required%20setup%3A**%0A%0A-%20Start%20Ollama%20(or%20any%20compatible%20server)%20so%20that%20%60POST%20%2Fv1%2Fchat%2Fcompletions%60%20is%20accessible%20at%20your%20tunnel%20URL.%0A-%20Request%20format%3A%20%60%7B%22model%22%3A%20%22%E2%80%A6%22%2C%20%22messages%22%3A%20%5B%7B%22role%22%3A%20%22user%22%2C%20%22content%22%3A%20%22%E2%80%A6%22%7D%5D%2C%20%22stream%22%3A%20false%7D%60%0A-%20Response%20format%3A%20standard%20OpenAI%20structure%20%E2%80%94%20content%20is%20read%20from%20%60choices%5B0%5D.message.content%60%20(or%20%60choices%5B0%5D.text%60%20%2F%20top-level%20%60response%60%20as%20fallback).%0A-%20Enable%20CORS%20on%20your%20tunnel%20so%20this%20page%20can%20reach%20it%20directly%20(e.g.%20%60OLLAMA_ORIGINS%3D*%60%20for%20Ollama).%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20**Echo%20test%3A**%20asks%20the%20model%20to%20repeat%20a%20random%20token%20(format%20%60TK%3C6-hex%3E%60).%20The%20token%20must%20appear%20somewhere%20in%20the%20response%20(case-insensitive).%0A2.%20**Arithmetic%20test%3A**%20asks%20%22What%20is%20A%20%2B%20B%3F%22%20with%20random%20integers%20(10-89).%20The%20correct%20sum%20must%20appear%20as%20digits%20in%20the%20response.%0A%0A**Submit%20as%20JSON%3A**%0A%0A%7B%22url%22%3A%20%22https%3A%2F%2Fmy-llm.trycloudflare.com%2Fv1%2Fchat%2Fcompletions%22%2C%20%22model%22%3A%20%22llama3.2%22%7D%0A%0A-%20%60url%60%20%E2%80%94%20the%20full%20path%20to%20%60%2Fv1%2Fchat%2Fcompletions%60%20at%20your%20tunnel.%0A-%20%60model%60%20%E2%80%94%20the%20exact%20model%20name%20your%20server%20is%20running.%0A**Your%20endpoint%20%2B%20model%20as%20JSON**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+9 Expose a Local LLM through a Tunnel (1 mark) Solved 
+
+Run a local LLM (e.g. **Ollama**) that exposes an **OpenAI-compatible** chat completions endpoint, expose it via a public tunnel, and submit the endpoint URL plus the model name. The grader sends two fresh prompts every check — an echo test and an arithmetic test. 
+
+**Required setup:**
+
+- Start Ollama (or any compatible server) so that `POST /v1/chat/completions` is accessible at your tunnel URL.
+- Request format: `{&quot;model&quot;: &quot;…&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;…&quot;}], &quot;stream&quot;: false}`
+- Response format: standard OpenAI structure — content is read from `choices[0].message.content` (or `choices[0].text` / top-level `response` as fallback).
+- Enable CORS on your tunnel so this page can reach it directly (e.g. `OLLAMA_ORIGINS=*` for Ollama).
+
+**What the grader checks:**
+
+1. **Echo test:** asks the model to repeat a random token (format `TK&lt;6-hex&gt;`). The token must appear somewhere in the response (case-insensitive).
+2. **Arithmetic test:** asks &quot;What is A + B?&quot; with random integers (10-89). The correct sum must appear as digits in the response.
+
+**Submit as JSON:**
+
+{&quot;url&quot;: &quot;https://my-llm.trycloudflare.com/v1/chat/completions&quot;, &quot;model&quot;: &quot;llama3.2&quot;}
+
+- `url` — the full path to `/v1/chat/completions` at your tunnel.
+- `model` — the exact model name your server is running.
+**Your endpoint + model as JSON**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-local-llm-structured-server" id="hq-local-llm-structured-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->10</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Local LLM Structured-Output Service (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Wrap a local LLM in a <strong>FastAPI</strong> <code>POST /extract</code> endpoint that
+        extracts structured invoice fields from free-form text and returns schema-validated JSON. The
+        grader sends randomized invoice texts on every check — you must extract the right values, not
+        hard-code them.
+      </p>
+
+      <p><strong>Endpoint: <code>POST /extract</code></strong></p>
+      <ul>
+        <li>Request body: <code>{"text": "&lt;invoice text&gt;"}</code></li>
+        <li>
+          Response: a JSON object with exactly these fields:
+          <ul>
+            <li><code>vendor</code> — the vendor name as a string.</li>
+            <li><code>amount</code> — the total due as a number (float or int).</li>
+            <li><code>currency</code> — 3-letter currency code, uppercase (e.g. <code>USD</code>).</li>
+            <li><code>date</code> — payment due date as <code>YYYY-MM-DD</code>.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p><strong>Accuracy requirements:</strong></p>
+      <ul>
+        <li><code>vendor</code>: extracted value must contain the vendor name (case-insensitive substring match).</li>
+        <li><code>amount</code>: within ±0.01 of the correct value.</li>
+        <li><code>currency</code>: exact 3-letter uppercase match.</li>
+        <li><code>date</code>: must contain the <code>YYYY-MM-DD</code> substring.</li>
+      </ul>
+
+      <p><strong>Error handling:</strong></p>
+      <ul>
+        <li>
+          Malformed or empty input must <strong>not</strong> crash with HTTP 500. Return a 422
+          validation error or best-effort valid JSON.
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks (two randomized invoices per call):</strong></p>
+      <ol>
+        <li>
+          Invoice text contains a planted vendor (e.g. <code>Acme-xxxx Industries Ltd.</code>), amount
+          (50-9050), currency (USD/EUR/GBP), and date (2026-MM-DD). All four fields are checked.
+        </li>
+        <li>Empty/garbage input — must not return HTTP 500.</li>
+      </ol>
+
+      <p>
+        Use a Pydantic response model to guarantee schema compliance. Deploy and paste your
+        <code>/extract</code> endpoint URL.
+      </p>
+      <label class="form-label" for="q-local-llm-structured-server"><strong>Your deployed /extract endpoint URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-extractor.example.workers.dev/extract" id="q-local-llm-structured-server" name="q-local-llm-structured-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-local-llm-structured-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/419" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A10%20Local%20LLM%20Structured-Output%20Service%20(2%20marks)%20Solved%20%0A%0AWrap%20a%20local%20LLM%20in%20a%20**FastAPI**%20%60POST%20%2Fextract%60%20endpoint%20that%20extracts%20structured%20invoice%20fields%20from%20free-form%20text%20and%20returns%20schema-validated%20JSON.%20The%20grader%20sends%20randomized%20invoice%20texts%20on%20every%20check%20%E2%80%94%20you%20must%20extract%20the%20right%20values%2C%20not%20hard-code%20them.%20%0A%0A**Endpoint%3A%20%60POST%20%2Fextract%60**%0A%0A-%20Request%20body%3A%20%60%7B%22text%22%3A%20%22%3Cinvoice%20text%3E%22%7D%60%0A-%20Response%3A%20a%20JSON%20object%20with%20exactly%20these%20fields%3A%20%20%0A%20%20-%20%60vendor%60%20%E2%80%94%20the%20vendor%20name%20as%20a%20string.%0A%20%20-%20%60amount%60%20%E2%80%94%20the%20total%20due%20as%20a%20number%20(float%20or%20int).%0A%20%20-%20%60currency%60%20%E2%80%94%203-letter%20currency%20code%2C%20uppercase%20(e.g.%20%60USD%60).%0A%20%20-%20%60date%60%20%E2%80%94%20payment%20due%20date%20as%20%60YYYY-MM-DD%60.%0A%0A**Accuracy%20requirements%3A**%0A%0A-%20%60vendor%60%3A%20extracted%20value%20must%20contain%20the%20vendor%20name%20(case-insensitive%20substring%20match).%0A-%20%60amount%60%3A%20within%20%C2%B10.01%20of%20the%20correct%20value.%0A-%20%60currency%60%3A%20exact%203-letter%20uppercase%20match.%0A-%20%60date%60%3A%20must%20contain%20the%20%60YYYY-MM-DD%60%20substring.%0A%0A**Error%20handling%3A**%0A%0A-%20Malformed%20or%20empty%20input%20must%20**not**%20crash%20with%20HTTP%20500%5C.%20Return%20a%20422%20validation%20error%20or%20best-effort%20valid%20JSON.%0A%0A**What%20the%20grader%20checks%20(two%20randomized%20invoices%20per%20call)%3A**%0A%0A1.%20Invoice%20text%20contains%20a%20planted%20vendor%20(e.g.%20%60Acme-xxxx%20Industries%20Ltd.%60)%2C%20amount%20(50-9050)%2C%20currency%20(USD%2FEUR%2FGBP)%2C%20and%20date%20(2026-MM-DD).%20All%20four%20fields%20are%20checked.%0A2.%20Empty%2Fgarbage%20input%20%E2%80%94%20must%20not%20return%20HTTP%20500.%0A%0AUse%20a%20Pydantic%20response%20model%20to%20guarantee%20schema%20compliance.%20Deploy%20and%20paste%20your%20%60%2Fextract%60%20endpoint%20URL.%20%0A%0A**Your%20deployed%20%2Fextract%20endpoint%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+10 Local LLM Structured-Output Service (2 marks) Solved 
+
+Wrap a local LLM in a **FastAPI** `POST /extract` endpoint that extracts structured invoice fields from free-form text and returns schema-validated JSON. The grader sends randomized invoice texts on every check — you must extract the right values, not hard-code them. 
+
+**Endpoint: `POST /extract`**
+
+- Request body: `{&quot;text&quot;: &quot;&lt;invoice text&gt;&quot;}`
+- Response: a JSON object with exactly these fields:  
+  - `vendor` — the vendor name as a string.
+  - `amount` — the total due as a number (float or int).
+  - `currency` — 3-letter currency code, uppercase (e.g. `USD`).
+  - `date` — payment due date as `YYYY-MM-DD`.
+
+**Accuracy requirements:**
+
+- `vendor`: extracted value must contain the vendor name (case-insensitive substring match).
+- `amount`: within ±0.01 of the correct value.
+- `currency`: exact 3-letter uppercase match.
+- `date`: must contain the `YYYY-MM-DD` substring.
+
+**Error handling:**
+
+- Malformed or empty input must **not** crash with HTTP 500\. Return a 422 validation error or best-effort valid JSON.
+
+**What the grader checks (two randomized invoices per call):**
+
+1. Invoice text contains a planted vendor (e.g. `Acme-xxxx Industries Ltd.`), amount (50-9050), currency (USD/EUR/GBP), and date (2026-MM-DD). All four fields are checked.
+2. Empty/garbage input — must not return HTTP 500.
+
+Use a Pydantic response model to guarantee schema compliance. Deploy and paste your `/extract` endpoint URL. 
+
+**Your deployed /extract endpoint URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-api-idempotency-pagination-server" id="hq-api-idempotency-pagination-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->11</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->API Engineering: Idempotency + Pagination + Rate Limit (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Deploy a <strong>FastAPI</strong> orders API that demonstrates three production-grade API
+        engineering patterns: idempotent POST, cursor-based pagination, and per-client rate limiting.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned values</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div><span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Total orders (T)</span><br><code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->43</code></div>
+          <div><span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Rate limit (R requests / 10s)</span><br><code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->20</code></div>
+        </div>
+      </div>
+
+      <p><strong>1. Idempotent order creation</strong></p>
+      <ul>
+        <li>
+          <code>POST /orders</code> with header <code>Idempotency-Key: &lt;k&gt;</code>.
+        </li>
+        <li>
+          On first call: create the order, return <code>{"id": "…", …}</code> with HTTP 201.
+        </li>
+        <li>
+          On repeat calls with the same key: return the <strong>same</strong> order id — never create
+          a duplicate.
+        </li>
+      </ul>
+
+      <p><strong>2. Cursor pagination</strong></p>
+      <ul>
+        <li>
+          <code>GET /orders?limit=P&amp;cursor=C</code> — return up to <code>P</code> orders from
+          your fixed catalog of IDs 1 through T (your assigned total, shown above).
+        </li>
+        <li>
+          Response: <code>{"items": [{"id": 1, …}, …], "next_cursor": "…"}</code> (or
+          <code>"next"</code> / <code>"orders"</code> field aliases are accepted).
+        </li>
+        <li>
+          Cursors are opaque — the grader passes back your returned cursor verbatim. Never return more
+          than <code>limit</code> items; serve every ID 1..T with no gaps or repeats across pages.
+        </li>
+      </ul>
+
+      <p><strong>3. Per-client rate limiting</strong></p>
+      <ul>
+        <li>
+          Read the <code>X-Client-Id</code> request header; bucket each client ID independently.
+        </li>
+        <li>
+          Your assigned bucket size is R requests per 10 seconds (shown above).
+        </li>
+        <li>
+          After R requests from the same client ID within the window, return HTTP 429 with a
+          <code>Retry-After</code> header. Different client IDs must not share a bucket.
+        </li>
+        <li>
+          <strong>CORS:</strong> your service must allow cross-origin requests from this page so the
+          browser can verify it directly.
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks:</strong></p>
+      <ol>
+        <li>Same idempotency key used twice — both responses must return the same order id.</li>
+        <li>Full paginated scan of orders 1..T — checks no gaps, no repeats, no over-sized pages.</li>
+        <li>R+1 requests from the same client ID — the (R+1)th must be HTTP 429 with Retry-After; a different client ID must still be accepted.</li>
+      </ol>
+
+      <label class="form-label" for="q-api-idempotency-pagination-server"><strong>Your deployed orders API base URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-orders.example.workers.dev" id="q-api-idempotency-pagination-server" name="q-api-idempotency-pagination-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-api-idempotency-pagination-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/414" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A11%20API%20Engineering%3A%20Idempotency%20%2B%20Pagination%20%2B%20Rate%20Limit%20(2%20marks)%20Solved%20%0A%0ADeploy%20a%20**FastAPI**%20orders%20API%20that%20demonstrates%20three%20production-grade%20API%20engineering%20patterns%3A%20idempotent%20POST%2C%20cursor-based%20pagination%2C%20and%20per-client%20rate%20limiting.%20%0A%0AYour%20assigned%20values%0A%0ATotal%20orders%20(T)%20%20%0A%6043%60%0A%0ARate%20limit%20(R%20requests%20%2F%2010s)%20%20%0A%6020%60%0A%0A**1%5C.%20Idempotent%20order%20creation**%0A%0A-%20%60POST%20%2Forders%60%20with%20header%20%60Idempotency-Key%3A%20%3Ck%3E%60.%0A-%20On%20first%20call%3A%20create%20the%20order%2C%20return%20%60%7B%22id%22%3A%20%22%E2%80%A6%22%2C%20%E2%80%A6%7D%60%20with%20HTTP%20201%5C.%0A-%20On%20repeat%20calls%20with%20the%20same%20key%3A%20return%20the%20**same**%20order%20id%20%E2%80%94%20never%20create%20a%20duplicate.%0A%0A**2%5C.%20Cursor%20pagination**%0A%0A-%20%60GET%20%2Forders%3Flimit%3DP%26cursor%3DC%60%20%E2%80%94%20return%20up%20to%20%60P%60%20orders%20from%20your%20fixed%20catalog%20of%20IDs%201%20through%20T%20(your%20assigned%20total%2C%20shown%20above).%0A-%20Response%3A%20%60%7B%22items%22%3A%20%5B%7B%22id%22%3A%201%2C%20%E2%80%A6%7D%2C%20%E2%80%A6%5D%2C%20%22next_cursor%22%3A%20%22%E2%80%A6%22%7D%60%20(or%20%60%22next%22%60%20%2F%20%60%22orders%22%60%20field%20aliases%20are%20accepted).%0A-%20Cursors%20are%20opaque%20%E2%80%94%20the%20grader%20passes%20back%20your%20returned%20cursor%20verbatim.%20Never%20return%20more%20than%20%60limit%60%20items%3B%20serve%20every%20ID%201..T%20with%20no%20gaps%20or%20repeats%20across%20pages.%0A%0A**3%5C.%20Per-client%20rate%20limiting**%0A%0A-%20Read%20the%20%60X-Client-Id%60%20request%20header%3B%20bucket%20each%20client%20ID%20independently.%0A-%20Your%20assigned%20bucket%20size%20is%20R%20requests%20per%2010%20seconds%20(shown%20above).%0A-%20After%20R%20requests%20from%20the%20same%20client%20ID%20within%20the%20window%2C%20return%20HTTP%20429%20with%20a%20%60Retry-After%60%20header.%20Different%20client%20IDs%20must%20not%20share%20a%20bucket.%0A-%20**CORS%3A**%20your%20service%20must%20allow%20cross-origin%20requests%20from%20this%20page%20so%20the%20browser%20can%20verify%20it%20directly.%0A%0A**What%20the%20grader%20checks%3A**%0A%0A1.%20Same%20idempotency%20key%20used%20twice%20%E2%80%94%20both%20responses%20must%20return%20the%20same%20order%20id.%0A2.%20Full%20paginated%20scan%20of%20orders%201..T%20%E2%80%94%20checks%20no%20gaps%2C%20no%20repeats%2C%20no%20over-sized%20pages.%0A3.%20R%2B1%20requests%20from%20the%20same%20client%20ID%20%E2%80%94%20the%20(R%2B1)th%20must%20be%20HTTP%20429%20with%20Retry-After%3B%20a%20different%20client%20ID%20must%20still%20be%20accepted.%0A**Your%20deployed%20orders%20API%20base%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+11 API Engineering: Idempotency + Pagination + Rate Limit (2 marks) Solved 
+
+Deploy a **FastAPI** orders API that demonstrates three production-grade API engineering patterns: idempotent POST, cursor-based pagination, and per-client rate limiting. 
+
+Your assigned values
+
+Total orders (T)  
+`43`
+
+Rate limit (R requests / 10s)  
+`20`
+
+**1\. Idempotent order creation**
+
+- `POST /orders` with header `Idempotency-Key: &lt;k&gt;`.
+- On first call: create the order, return `{&quot;id&quot;: &quot;…&quot;, …}` with HTTP 201\.
+- On repeat calls with the same key: return the **same** order id — never create a duplicate.
+
+**2\. Cursor pagination**
+
+- `GET /orders?limit=P&amp;cursor=C` — return up to `P` orders from your fixed catalog of IDs 1 through T (your assigned total, shown above).
+- Response: `{&quot;items&quot;: [{&quot;id&quot;: 1, …}, …], &quot;next_cursor&quot;: &quot;…&quot;}` (or `&quot;next&quot;` / `&quot;orders&quot;` field aliases are accepted).
+- Cursors are opaque — the grader passes back your returned cursor verbatim. Never return more than `limit` items; serve every ID 1..T with no gaps or repeats across pages.
+
+**3\. Per-client rate limiting**
+
+- Read the `X-Client-Id` request header; bucket each client ID independently.
+- Your assigned bucket size is R requests per 10 seconds (shown above).
+- After R requests from the same client ID within the window, return HTTP 429 with a `Retry-After` header. Different client IDs must not share a bucket.
+- **CORS:** your service must allow cross-origin requests from this page so the browser can verify it directly.
+
+**What the grader checks:**
+
+1. Same idempotency key used twice — both responses must return the same order id.
+2. Full paginated scan of orders 1..T — checks no gaps, no repeats, no over-sized pages.
+3. R+1 requests from the same client ID — the (R+1)th must be HTTP 429 with Retry-After; a different client ID must still be accepted.
+**Your deployed orders API base URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-middleware-ratelimit-cors-server" id="hq-middleware-ratelimit-cors-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->12</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Middleware Stack: Rate-Limit + CORS + Request Context (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+      <p>
+        Build a <strong>FastAPI</strong> service that composes three middleware layers: a scoped CORS
+        policy, a per-client rate limiter, and a request-context propagator.
+      </p>
+
+      <div style="background: rgb(30, 41, 59); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; font-size: 0.88rem; --darkreader-inline-bgcolor: var(--darkreader-background-1e293b, #18212f); --darkreader-inline-bgimage: none;" data-darkreader-inline-bgcolor="" data-darkreader-inline-bgimage="">
+        <div style="color: rgb(148, 163, 184); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Your assigned values</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div><span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Allowed CORS origin</span><br><code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->https://app-320pj9.example.com</code></div>
+          <div><span style="color: rgb(148, 163, 184); --darkreader-inline-color: var(--darkreader-text-94a3b8, #b0a99f);" data-darkreader-inline-color="">Rate-limit bucket (B)</span><br><code style="color: rgb(110, 231, 183); font-size: 0.95rem; --darkreader-inline-color: var(--darkreader-text-6ee7b7, #6ee7b7);" data-darkreader-inline-color=""><!--?lit$646114207$-->13 req / 10s</code></div>
+        </div>
+      </div>
+
+      <p><strong>Endpoint: <code>GET /ping</code></strong></p>
+      <ul>
+        <li>
+          Return <code>{"email": "…", "request_id": "…"}</code> where <code>email</code> is your
+          logged-in address and <code>request_id</code> is the request's ID (see context middleware
+          below).
+        </li>
+      </ul>
+
+      <p><strong>Middleware 1 — Request context</strong></p>
+      <ul>
+        <li>
+          If the inbound request carries an <code>X-Request-ID</code> header, reuse that value as the
+          <code>request_id</code>.
+        </li>
+        <li>Otherwise generate a fresh unique ID (e.g. UUID4).</li>
+        <li>
+          Always return the <code>request_id</code> both in the response JSON body and in the
+          <code>X-Request-ID</code> response header.
+        </li>
+      </ul>
+
+      <p><strong>Middleware 2 — CORS</strong></p>
+      <ul>
+        <li>
+          Only your <em>assigned</em> allowed origin (shown above) may receive an
+          <code>Access-Control-Allow-Origin</code> header — no wildcards (<code>*</code>).
+        </li>
+        <li>Preflight (<code>OPTIONS /ping</code>) from the allowed origin must succeed.</li>
+        <li>Any other origin must not receive the ACAO header.</li>
+        <li>
+          <strong>Note:</strong> Also allow this exam page's origin so the browser can reach
+          <code>/ping</code> during verification.
+        </li>
+      </ul>
+
+      <p><strong>Middleware 3 — Per-client rate limiting</strong></p>
+      <ul>
+        <li>Read the <code>X-Client-Id</code> request header and bucket each ID independently.</li>
+        <li>
+          Your assigned bucket size is B requests (shown above). After B requests from
+          the same client within the window, return HTTP 429. A fresh client ID must still be accepted.
+        </li>
+      </ul>
+
+      <p><strong>What the grader checks (from your browser):</strong></p>
+      <ol>
+        <li>
+          <code>GET /ping</code> with a supplied <code>X-Request-ID</code> — same value must appear
+          in response body and response header.
+        </li>
+        <li>
+          <code>GET /ping</code> without <code>X-Request-ID</code> — a fresh unique ID must be
+          generated and appear in both places.
+        </li>
+        <li><!--?lit$646114207$-->18 requests from the same client ID — must trigger 429; a different client ID must still succeed.</li>
+      </ol>
+
+      <label class="form-label" for="q-middleware-ratelimit-cors-server"><strong>Your deployed service base URL</strong></label>
+      <input class="form-control font-monospace" type="url" placeholder="https://my-mw.example.workers.dev" id="q-middleware-ratelimit-cors-server" name="q-middleware-ratelimit-cors-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div>
+  </div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-middleware-ratelimit-cors-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/420" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A12%20Middleware%20Stack%3A%20Rate-Limit%20%2B%20CORS%20%2B%20Request%20Context%20(1.5%20marks)%20Solved%20%0A%0ABuild%20a%20**FastAPI**%20service%20that%20composes%20three%20middleware%20layers%3A%20a%20scoped%20CORS%20policy%2C%20a%20per-client%20rate%20limiter%2C%20and%20a%20request-context%20propagator.%20%0A%0AYour%20assigned%20values%0A%0AAllowed%20CORS%20origin%20%20%0A%60https%3A%2F%2Fapp-320pj9.example.com%60%0A%0ARate-limit%20bucket%20(B)%20%20%0A%6013%20req%20%2F%2010s%60%0A%0A**Endpoint%3A%20%60GET%20%2Fping%60**%0A%0A-%20Return%20%60%7B%22email%22%3A%20%22%E2%80%A6%22%2C%20%22request_id%22%3A%20%22%E2%80%A6%22%7D%60%20where%20%60email%60%20is%20your%20logged-in%20address%20and%20%60request_id%60%20is%20the%20request's%20ID%20(see%20context%20middleware%20below).%0A%0A**Middleware%201%20%E2%80%94%20Request%20context**%0A%0A-%20If%20the%20inbound%20request%20carries%20an%20%60X-Request-ID%60%20header%2C%20reuse%20that%20value%20as%20the%20%60request_id%60.%0A-%20Otherwise%20generate%20a%20fresh%20unique%20ID%20(e.g.%20UUID4).%0A-%20Always%20return%20the%20%60request_id%60%20both%20in%20the%20response%20JSON%20body%20and%20in%20the%20%60X-Request-ID%60%20response%20header.%0A%0A**Middleware%202%20%E2%80%94%20CORS**%0A%0A-%20Only%20your%20_assigned_%20allowed%20origin%20(shown%20above)%20may%20receive%20an%20%60Access-Control-Allow-Origin%60%20header%20%E2%80%94%20no%20wildcards%20(%60*%60).%0A-%20Preflight%20(%60OPTIONS%20%2Fping%60)%20from%20the%20allowed%20origin%20must%20succeed.%0A-%20Any%20other%20origin%20must%20not%20receive%20the%20ACAO%20header.%0A-%20**Note%3A**%20Also%20allow%20this%20exam%20page's%20origin%20so%20the%20browser%20can%20reach%20%60%2Fping%60%20during%20verification.%0A%0A**Middleware%203%20%E2%80%94%20Per-client%20rate%20limiting**%0A%0A-%20Read%20the%20%60X-Client-Id%60%20request%20header%20and%20bucket%20each%20ID%20independently.%0A-%20Your%20assigned%20bucket%20size%20is%20B%20requests%20(shown%20above).%20After%20B%20requests%20from%20the%20same%20client%20within%20the%20window%2C%20return%20HTTP%20429%5C.%20A%20fresh%20client%20ID%20must%20still%20be%20accepted.%0A%0A**What%20the%20grader%20checks%20(from%20your%20browser)%3A**%0A%0A1.%20%60GET%20%2Fping%60%20with%20a%20supplied%20%60X-Request-ID%60%20%E2%80%94%20same%20value%20must%20appear%20in%20response%20body%20and%20response%20header.%0A2.%20%60GET%20%2Fping%60%20without%20%60X-Request-ID%60%20%E2%80%94%20a%20fresh%20unique%20ID%20must%20be%20generated%20and%20appear%20in%20both%20places.%0A3.%2018%20requests%20from%20the%20same%20client%20ID%20%E2%80%94%20must%20trigger%20429%3B%20a%20different%20client%20ID%20must%20still%20succeed.%0A**Your%20deployed%20service%20base%20URL**" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+12 Middleware Stack: Rate-Limit + CORS + Request Context (1.5 marks) Solved 
+
+Build a **FastAPI** service that composes three middleware layers: a scoped CORS policy, a per-client rate limiter, and a request-context propagator. 
+
+Your assigned values
+
+Allowed CORS origin  
+`https://app-320pj9.example.com`
+
+Rate-limit bucket (B)  
+`13 req / 10s`
+
+**Endpoint: `GET /ping`**
+
+- Return `{&quot;email&quot;: &quot;…&quot;, &quot;request_id&quot;: &quot;…&quot;}` where `email` is your logged-in address and `request_id` is the request's ID (see context middleware below).
+
+**Middleware 1 — Request context**
+
+- If the inbound request carries an `X-Request-ID` header, reuse that value as the `request_id`.
+- Otherwise generate a fresh unique ID (e.g. UUID4).
+- Always return the `request_id` both in the response JSON body and in the `X-Request-ID` response header.
+
+**Middleware 2 — CORS**
+
+- Only your _assigned_ allowed origin (shown above) may receive an `Access-Control-Allow-Origin` header — no wildcards (`*`).
+- Preflight (`OPTIONS /ping`) from the allowed origin must succeed.
+- Any other origin must not receive the ACAO header.
+- **Note:** Also allow this exam page's origin so the browser can reach `/ping` during verification.
+
+**Middleware 3 — Per-client rate limiting**
+
+- Read the `X-Client-Id` request header and bucket each ID independently.
+- Your assigned bucket size is B requests (shown above). After B requests from the same client within the window, return HTTP 429\. A fresh client ID must still be accepted.
+
+**What the grader checks (from your browser):**
+
+1. `GET /ping` with a supplied `X-Request-ID` — same value must appear in response body and response header.
+2. `GET /ping` without `X-Request-ID` — a fresh unique ID must be generated and appear in both places.
+3. 18 requests from the same client ID — must trigger 429; a different client ID must still succeed.
+**Your deployed service base URL**" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-ollama-stream-reassembly-server" id="hq-ollama-stream-reassembly-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->13</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Recover a fragmented LLM stream (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+
+      <p>Your LLM client treats every network chunk as a complete JSON object and sometimes corrupts Unicode.
+        Reconstruct these three independent native Ollama-style NDJSON streams.</p>
+      <p>Each array contains ordered <strong>hex-encoded byte chunks</strong>, not JSON records. Decode the hex,
+        preserve UTF-8 characters across chunk boundaries, buffer complete newline-delimited JSON records,
+        and concatenate only their <code>response</code> strings. Ignore <code>thinking</code>.</p>
+      <ul>
+        <li>Include any response text on the first <code>done: true</code> record, then stop with
+          <code>complete: true</code>.</li>
+        <li>On an <code>error</code> record, preserve earlier response text, set that error string and stop
+          with <code>complete: false</code>. Ignore subsequent records.</li>
+        <li>At transport EOF without a terminal record, use <code>complete: false</code> and
+          <code>error: null</code>. Ignore any incomplete trailing JSON record.</li>
+        <li>Preserve spaces, escaped newlines and Unicode exactly. Use <code>error: null</code> unless
+          an error record was encountered.</li>
+      </ul>
+      <details open=""><summary>Captured byte chunks</summary><pre><!--?lit$646114207$-->{
+  "A": [
+    "7b22726573706f6e736522",
+    "3a225265706f7274206a6f622d64343635383733373a",
+    "20222c22646f6e65223a66616c73657d0a7b",
+    "227468696e6b696e67223a22696e7465726e616c206e6f",
+    "7465222c22726573706f6e7365223a22222c2264",
+    "6f6e65223a66616c73657d0a7b22",
+    "726573706f6e7365223a22636166c3",
+    "a95c6e222c22646f6e65223a66616c7365",
+    "7d0a7b22726573706f6e7365223a22526561647920",
+    "e2",
+    "9c93222c22646f6e65223a747275652c22",
+    "646f6e655f726561736f6e223a2273746f70227d0a"
+  ],
+  "B": [
+    "7b22726573706f6e736522",
+    "3a225061727469616c206a6f622d6434363538373337",
+    "222c22646f6e65223a66616c73657d0a7b22",
+    "726573706f6e7365223a22756e66696e6973686564"
+  ],
+  "C": [
+    "7b22726573706f6e736522",
+    "3a224472616674206a6f622d6434363538373337222c",
+    "22646f6e65223a66616c73657d0a7b226572",
+    "726f72223a226d6f64656c20756e6c6f61646564227d0a",
+    "7b22726573706f6e7365223a2249474e4f524522",
+    "2c22646f6e65223a747275657d0a"
+  ]
+}</pre></details>
+      <p>Serve this JSON structure at a public URL: <code>{"A":{"text":"...","complete":true,"error":null},"B":{...},"C":{...}}</code>.
+        No model download is required. A publicly hosted JSON file or a GET endpoint is acceptable.</p>
+      <p><a href="https://docs.ollama.com/api/streaming" target="_blank" rel="noopener">Ollama streaming reference</a></p>
+      <p>Submit the URL below. The exam server sends a GET request and checks the returned JSON against
+        your assigned cases. Serve raw JSON without authentication or an HTML wrapper, within 10 seconds
+        and at most 64 KiB. Keep the URL available through grading. CORS is not required because the
+        exam server fetches it directly.</p>
+      <label class="form-label" for="q-ollama-stream-reassembly-server">Public URL returning your JSON answer</label>
+      <input class="form-control font-monospace" type="url" placeholder="https://example.com/answer.json" id="q-ollama-stream-reassembly-server" name="q-ollama-stream-reassembly-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div></div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-ollama-stream-reassembly-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/538" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A13%20Recover%20a%20fragmented%20LLM%20stream%20(1.5%20marks)%20Solved%20%0A%0AYour%20LLM%20client%20treats%20every%20network%20chunk%20as%20a%20complete%20JSON%20object%20and%20sometimes%20corrupts%20Unicode.%20Reconstruct%20these%20three%20independent%20native%20Ollama-style%20NDJSON%20streams.%0A%0AEach%20array%20contains%20ordered%20**hex-encoded%20byte%20chunks**%2C%20not%20JSON%20records.%20Decode%20the%20hex%2C%20preserve%20UTF-8%20characters%20across%20chunk%20boundaries%2C%20buffer%20complete%20newline-delimited%20JSON%20records%2C%20and%20concatenate%20only%20their%20%60response%60%20strings.%20Ignore%20%60thinking%60.%0A%0A-%20Include%20any%20response%20text%20on%20the%20first%20%60done%3A%20true%60%20record%2C%20then%20stop%20with%20%60complete%3A%20true%60.%0A-%20On%20an%20%60error%60%20record%2C%20preserve%20earlier%20response%20text%2C%20set%20that%20error%20string%20and%20stop%20with%20%60complete%3A%20false%60.%20Ignore%20subsequent%20records.%0A-%20At%20transport%20EOF%20without%20a%20terminal%20record%2C%20use%20%60complete%3A%20false%60%20and%20%60error%3A%20null%60.%20Ignore%20any%20incomplete%20trailing%20JSON%20record.%0A-%20Preserve%20spaces%2C%20escaped%20newlines%20and%20Unicode%20exactly.%20Use%20%60error%3A%20null%60%20unless%20an%20error%20record%20was%20encountered.%0ACaptured%20byte%20chunks%0A%0A%7B%0A%20%20%22A%22%3A%20%5B%0A%20%20%20%20%227b22726573706f6e736522%22%2C%0A%20%20%20%20%223a225265706f7274206a6f622d64343635383733373a%22%2C%0A%20%20%20%20%2220222c22646f6e65223a66616c73657d0a7b%22%2C%0A%20%20%20%20%22227468696e6b696e67223a22696e7465726e616c206e6f%22%2C%0A%20%20%20%20%227465222c22726573706f6e7365223a22222c2264%22%2C%0A%20%20%20%20%226f6e65223a66616c73657d0a7b22%22%2C%0A%20%20%20%20%22726573706f6e7365223a22636166c3%22%2C%0A%20%20%20%20%22a95c6e222c22646f6e65223a66616c7365%22%2C%0A%20%20%20%20%227d0a7b22726573706f6e7365223a22526561647920%22%2C%0A%20%20%20%20%22e2%22%2C%0A%20%20%20%20%229c93222c22646f6e65223a747275652c22%22%2C%0A%20%20%20%20%22646f6e655f726561736f6e223a2273746f70227d0a%22%0A%20%20%5D%2C%0A%20%20%22B%22%3A%20%5B%0A%20%20%20%20%227b22726573706f6e736522%22%2C%0A%20%20%20%20%223a225061727469616c206a6f622d6434363538373337%22%2C%0A%20%20%20%20%22222c22646f6e65223a66616c73657d0a7b22%22%2C%0A%20%20%20%20%22726573706f6e7365223a22756e66696e6973686564%22%0A%20%20%5D%2C%0A%20%20%22C%22%3A%20%5B%0A%20%20%20%20%227b22726573706f6e736522%22%2C%0A%20%20%20%20%223a224472616674206a6f622d6434363538373337222c%22%2C%0A%20%20%20%20%2222646f6e65223a66616c73657d0a7b226572%22%2C%0A%20%20%20%20%22726f72223a226d6f64656c20756e6c6f61646564227d0a%22%2C%0A%20%20%20%20%227b22726573706f6e7365223a2249474e4f524522%22%2C%0A%20%20%20%20%222c22646f6e65223a747275657d0a%22%0A%20%20%5D%0A%7D%0A%0AServe%20this%20JSON%20structure%20at%20a%20public%20URL%3A%20%60%7B%22A%22%3A%7B%22text%22%3A%22...%22%2C%22complete%22%3Atrue%2C%22error%22%3Anull%7D%2C%22B%22%3A%7B...%7D%2C%22C%22%3A%7B...%7D%7D%60.%20No%20model%20download%20is%20required.%20A%20publicly%20hosted%20JSON%20file%20or%20a%20GET%20endpoint%20is%20acceptable.%0A%0A%5BOllama%20streaming%20reference%5D(https%3A%2F%2Fdocs.ollama.com%2Fapi%2Fstreaming)%0A%0ASubmit%20the%20URL%20below.%20The%20exam%20server%20sends%20a%20GET%20request%20and%20checks%20the%20returned%20JSON%20against%20your%20assigned%20cases.%20Serve%20raw%20JSON%20without%20authentication%20or%20an%20HTML%20wrapper%2C%20within%2010%20seconds%20and%20at%20most%2064%20KiB.%20Keep%20the%20URL%20available%20through%20grading.%20CORS%20is%20not%20required%20because%20the%20exam%20server%20fetches%20it%20directly.%0A%0APublic%20URL%20returning%20your%20JSON%20answer" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+13 Recover a fragmented LLM stream (1.5 marks) Solved 
+
+Your LLM client treats every network chunk as a complete JSON object and sometimes corrupts Unicode. Reconstruct these three independent native Ollama-style NDJSON streams.
+
+Each array contains ordered **hex-encoded byte chunks**, not JSON records. Decode the hex, preserve UTF-8 characters across chunk boundaries, buffer complete newline-delimited JSON records, and concatenate only their `response` strings. Ignore `thinking`.
+
+- Include any response text on the first `done: true` record, then stop with `complete: true`.
+- On an `error` record, preserve earlier response text, set that error string and stop with `complete: false`. Ignore subsequent records.
+- At transport EOF without a terminal record, use `complete: false` and `error: null`. Ignore any incomplete trailing JSON record.
+- Preserve spaces, escaped newlines and Unicode exactly. Use `error: null` unless an error record was encountered.
+Captured byte chunks
+
+{
+  &quot;A&quot;: [
+    &quot;7b22726573706f6e736522&quot;,
+    &quot;3a225265706f7274206a6f622d64343635383733373a&quot;,
+    &quot;20222c22646f6e65223a66616c73657d0a7b&quot;,
+    &quot;227468696e6b696e67223a22696e7465726e616c206e6f&quot;,
+    &quot;7465222c22726573706f6e7365223a22222c2264&quot;,
+    &quot;6f6e65223a66616c73657d0a7b22&quot;,
+    &quot;726573706f6e7365223a22636166c3&quot;,
+    &quot;a95c6e222c22646f6e65223a66616c7365&quot;,
+    &quot;7d0a7b22726573706f6e7365223a22526561647920&quot;,
+    &quot;e2&quot;,
+    &quot;9c93222c22646f6e65223a747275652c22&quot;,
+    &quot;646f6e655f726561736f6e223a2273746f70227d0a&quot;
+  ],
+  &quot;B&quot;: [
+    &quot;7b22726573706f6e736522&quot;,
+    &quot;3a225061727469616c206a6f622d6434363538373337&quot;,
+    &quot;222c22646f6e65223a66616c73657d0a7b22&quot;,
+    &quot;726573706f6e7365223a22756e66696e6973686564&quot;
+  ],
+  &quot;C&quot;: [
+    &quot;7b22726573706f6e736522&quot;,
+    &quot;3a224472616674206a6f622d6434363538373337222c&quot;,
+    &quot;22646f6e65223a66616c73657d0a7b226572&quot;,
+    &quot;726f72223a226d6f64656c20756e6c6f61646564227d0a&quot;,
+    &quot;7b22726573706f6e7365223a2249474e4f524522&quot;,
+    &quot;2c22646f6e65223a747275657d0a&quot;
+  ]
+}
+
+Serve this JSON structure at a public URL: `{&quot;A&quot;:{&quot;text&quot;:&quot;...&quot;,&quot;complete&quot;:true,&quot;error&quot;:null},&quot;B&quot;:{...},&quot;C&quot;:{...}}`. No model download is required. A publicly hosted JSON file or a GET endpoint is acceptable.
+
+[Ollama streaming reference](https://docs.ollama.com/api/streaming)
+
+Submit the URL below. The exam server sends a GET request and checks the returned JSON against your assigned cases. Serve raw JSON without authentication or an HTML wrapper, within 10 seconds and at most 64 KiB. Keep the URL available through grading. CORS is not required because the exam server fetches it directly.
+
+Public URL returning your JSON answer" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-docker-build-cache-server" id="hq-docker-build-cache-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->14</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Diagnose Docker build cache misses (<!--?lit$646114207$-->1.5 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+
+      <p>A deployment pipeline keeps reinstalling dependencies unnecessarily. Determine which steps
+        actually need to run again in this single-stage build.</p>
+      <pre>FROM python:3.12-slim
+WORKDIR /app
+# L1
+COPY requirements.txt ./
+# L2
+RUN pip install --no-cache-dir -r requirements.txt
+# L3
+COPY src/ ./src/
+# L4
+RUN python -m compileall src
+# L5
+RUN python -m unittest discover -s src</pre>
+      <p>The build context contains only requirements.txt, src/, README.md and the Dockerfile.
+        README.md is excluded by .dockerignore. A successful unchanged build is cached. The base-image digest,
+        platform, build arguments and all other inputs remain fixed. There are no cache mounts or external
+        cache changes. The pip flag affects pip's download cache, not Docker's layer cache.</p>
+      <p>Treat each case independently against that original cached build:</p>
+      <ol type="A">
+        <li>Change the contents of src/app.py.</li>
+        <li>Change the contents of requirements.txt.</li>
+        <li>Only change src/app.py's modification time with touch; content and all other metadata stay unchanged.</li>
+        <li>Change the contents of the excluded README.md.</li>
+        <li>Change only L4 to <code>RUN python -m compileall -q src</code>.</li>
+      </ol>
+      <p>For this exercise, once a step misses cache, all later steps run again. List steps in build order.
+        L2 costs <!--?lit$646114207$-->57 seconds, L4 costs <!--?lit$646114207$-->19 seconds, L5 costs <!--?lit$646114207$-->22 seconds;
+        COPY steps and cache hits cost zero. Apply these same costs in case E.</p>
+      <p>Serve this JSON structure at a public URL: <code>{"A":{"steps":["L3",...],"seconds":N},"B":{...},"C":{...},"D":{...},"E":{...}}</code>.
+        Include every re-executed step L1–L5, even zero-cost COPY steps. Use an empty array for all-cache-hit cases.</p>
+      <p><a href="https://docs.docker.com/build/cache/invalidation/" target="_blank" rel="noopener">Docker cache invalidation reference</a></p>
+      <p>Submit the URL below. The exam server sends a GET request and checks the returned JSON against
+        your assigned cases. Serve raw JSON without authentication or an HTML wrapper, within 10 seconds
+        and at most 64 KiB. Keep the URL available through grading. CORS is not required because the
+        exam server fetches it directly.</p>
+      <label class="form-label" for="q-docker-build-cache-server">Public URL returning your JSON answer</label>
+      <input class="form-control font-monospace" type="url" placeholder="https://example.com/answer.json" id="q-docker-build-cache-server" name="q-docker-build-cache-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div></div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-docker-build-cache-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/533" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A14%20Diagnose%20Docker%20build%20cache%20misses%20(1.5%20marks)%20Solved%20%0A%0AA%20deployment%20pipeline%20keeps%20reinstalling%20dependencies%20unnecessarily.%20Determine%20which%20steps%20actually%20need%20to%20run%20again%20in%20this%20single-stage%20build.%0A%0AFROM%20python%3A3.12-slim%0AWORKDIR%20%2Fapp%0A%23%20L1%0ACOPY%20requirements.txt%20.%2F%0A%23%20L2%0ARUN%20pip%20install%20--no-cache-dir%20-r%20requirements.txt%0A%23%20L3%0ACOPY%20src%2F%20.%2Fsrc%2F%0A%23%20L4%0ARUN%20python%20-m%20compileall%20src%0A%23%20L5%0ARUN%20python%20-m%20unittest%20discover%20-s%20src%0A%0AThe%20build%20context%20contains%20only%20requirements.txt%2C%20src%2F%2C%20README.md%20and%20the%20Dockerfile.%20README.md%20is%20excluded%20by%20.dockerignore.%20A%20successful%20unchanged%20build%20is%20cached.%20The%20base-image%20digest%2C%20platform%2C%20build%20arguments%20and%20all%20other%20inputs%20remain%20fixed.%20There%20are%20no%20cache%20mounts%20or%20external%20cache%20changes.%20The%20pip%20flag%20affects%20pip's%20download%20cache%2C%20not%20Docker's%20layer%20cache.%0A%0ATreat%20each%20case%20independently%20against%20that%20original%20cached%20build%3A%0A%0A1.%20Change%20the%20contents%20of%20src%2Fapp.py.%0A2.%20Change%20the%20contents%20of%20requirements.txt.%0A3.%20Only%20change%20src%2Fapp.py's%20modification%20time%20with%20touch%3B%20content%20and%20all%20other%20metadata%20stay%20unchanged.%0A4.%20Change%20the%20contents%20of%20the%20excluded%20README.md.%0A5.%20Change%20only%20L4%20to%20%60RUN%20python%20-m%20compileall%20-q%20src%60.%0A%0AFor%20this%20exercise%2C%20once%20a%20step%20misses%20cache%2C%20all%20later%20steps%20run%20again.%20List%20steps%20in%20build%20order.%20L2%20costs%2057%20seconds%2C%20L4%20costs%2019%20seconds%2C%20L5%20costs%2022%20seconds%3B%20COPY%20steps%20and%20cache%20hits%20cost%20zero.%20Apply%20these%20same%20costs%20in%20case%20E.%0A%0AServe%20this%20JSON%20structure%20at%20a%20public%20URL%3A%20%60%7B%22A%22%3A%7B%22steps%22%3A%5B%22L3%22%2C...%5D%2C%22seconds%22%3AN%7D%2C%22B%22%3A%7B...%7D%2C%22C%22%3A%7B...%7D%2C%22D%22%3A%7B...%7D%2C%22E%22%3A%7B...%7D%7D%60.%20Include%20every%20re-executed%20step%20L1%E2%80%93L5%2C%20even%20zero-cost%20COPY%20steps.%20Use%20an%20empty%20array%20for%20all-cache-hit%20cases.%0A%0A%5BDocker%20cache%20invalidation%20reference%5D(https%3A%2F%2Fdocs.docker.com%2Fbuild%2Fcache%2Finvalidation%2F)%0A%0ASubmit%20the%20URL%20below.%20The%20exam%20server%20sends%20a%20GET%20request%20and%20checks%20the%20returned%20JSON%20against%20your%20assigned%20cases.%20Serve%20raw%20JSON%20without%20authentication%20or%20an%20HTML%20wrapper%2C%20within%2010%20seconds%20and%20at%20most%2064%20KiB.%20Keep%20the%20URL%20available%20through%20grading.%20CORS%20is%20not%20required%20because%20the%20exam%20server%20fetches%20it%20directly.%0A%0APublic%20URL%20returning%20your%20JSON%20answer" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+14 Diagnose Docker build cache misses (1.5 marks) Solved 
+
+A deployment pipeline keeps reinstalling dependencies unnecessarily. Determine which steps actually need to run again in this single-stage build.
+
+FROM python:3.12-slim
+WORKDIR /app
+# L1
+COPY requirements.txt ./
+# L2
+RUN pip install --no-cache-dir -r requirements.txt
+# L3
+COPY src/ ./src/
+# L4
+RUN python -m compileall src
+# L5
+RUN python -m unittest discover -s src
+
+The build context contains only requirements.txt, src/, README.md and the Dockerfile. README.md is excluded by .dockerignore. A successful unchanged build is cached. The base-image digest, platform, build arguments and all other inputs remain fixed. There are no cache mounts or external cache changes. The pip flag affects pip's download cache, not Docker's layer cache.
+
+Treat each case independently against that original cached build:
+
+1. Change the contents of src/app.py.
+2. Change the contents of requirements.txt.
+3. Only change src/app.py's modification time with touch; content and all other metadata stay unchanged.
+4. Change the contents of the excluded README.md.
+5. Change only L4 to `RUN python -m compileall -q src`.
+
+For this exercise, once a step misses cache, all later steps run again. List steps in build order. L2 costs 57 seconds, L4 costs 19 seconds, L5 costs 22 seconds; COPY steps and cache hits cost zero. Apply these same costs in case E.
+
+Serve this JSON structure at a public URL: `{&quot;A&quot;:{&quot;steps&quot;:[&quot;L3&quot;,...],&quot;seconds&quot;:N},&quot;B&quot;:{...},&quot;C&quot;:{...},&quot;D&quot;:{...},&quot;E&quot;:{...}}`. Include every re-executed step L1–L5, even zero-cost COPY steps. Use an empty array for all-cache-hit cases.
+
+[Docker cache invalidation reference](https://docs.docker.com/build/cache/invalidation/)
+
+Submit the URL below. The exam server sends a GET request and checks the returned JSON against your assigned cases. Serve raw JSON without authentication or an HTML wrapper, within 10 seconds and at most 64 KiB. Keep the URL available through grading. CORS is not required because the exam server fetches it directly.
+
+Public URL returning your JSON answer" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----><!---->
+        <details class="card my-5" open="" data-question="q-termlog-ollama-modelfile-server" id="hq-termlog-ollama-modelfile-server">
+          <summary class="card-header d-flex align-items-center gap-2">
+            <span class="badge text-bg-primary"><!--?lit$646114207$-->15</span>
+            <span class="flex-grow-1"><!--?lit$646114207$-->Create a custom Ollama model (termlog) (<!--?lit$646114207$-->2 <!--?lit$646114207$-->marks)</span>
+            <span class="badge text-bg-success solved-badge d-none"><i class="bi bi-check-circle-fill me-1"></i>Solved</span>
+            <i class="bi bi-chevron-up question-chevron" aria-hidden="true"></i>
+          </summary>
+          <!--?lit$646114207$-->
+          <div class="card-body"><!--?lit$646114207$-->
+    <div class="mb-3">
+
+      <p>Create a reusable local deployment assistant with an Ollama Modelfile. This exercise checks
+        the saved model configuration, not whether an LLM happens to follow a prompt.</p>
+      <p>Before recording, install Ollama and download any small text-generation model your machine can run.
+        Use it in your FROM instruction. Keep its default chat template.</p>
+      <p>Your custom model name: <code><!--?lit$646114207$-->ga2-assistant-d4658737</code>. Configure these exact values:</p>
+      <pre><!--?lit$646114207$-->{
+  "temperature": 0.3,
+  "num_ctx": 4096,
+  "seed": 723,
+  "num_predict": 107
+}</pre>
+      <p>Set this exact SYSTEM prompt:</p><pre><!--?lit$646114207$-->You are the deployment assistant for project d4658737. Give concise answers and never invent commands.</pre>
+      <ol>
+        <li>Install <a href="https://github.com/mynkpdr/termlog" target="_blank" rel="noopener">termlog</a>
+          and log in with <code>termlog login</code> as <strong><!--?lit$646114207$-->24f3003132@ds.study.iitm.ac.in</strong>.</li>
+        <li>Start <code>termlog rec model.cast</code>. Create your Modelfile inside the recording,
+          using FROM, SYSTEM and PARAMETER instructions.</li>
+        <li>Run <code>ollama create <!--?lit$646114207$-->ga2-assistant-d4658737 -f Modelfile</code> and wait for success.</li>
+        <li>Run these commands individually. The markers must appear on their own output lines.
+          Widen your terminal if it wraps output:
+          <pre>printf '
+MODELFILE_BEGIN <!--?lit$646114207$-->ga2-assistant-d4658737
+'
+ollama show --modelfile <!--?lit$646114207$-->ga2-assistant-d4658737
+printf '
+MODELFILE_END <!--?lit$646114207$-->ga2-assistant-d4658737
+'</pre></li>
+        <li>Type <code>exit</code> and package the files:
+          <pre>tar -czf submission.tar.gz model.cast model.cast.jwt</pre>
+          Upload the archive to a public URL serving the actual file.</li>
+      </ol>
+      <p>The grader checks your signed recording, account, exit event, create/show commands and exported
+        SYSTEM and parameter values. Each assigned parameter must appear once. Other inherited parameters
+        are allowed. No public model endpoint is needed. Keep the archive under 1 MB compressed and
+        5 MB uncompressed, and avoid recording secrets.</p>
+      <p><a href="https://docs.ollama.com/modelfile" target="_blank" rel="noopener">Ollama Modelfile reference</a></p>
+      <label class="form-label" for="q-termlog-ollama-modelfile-server">Public URL of submission.tar.gz</label>
+      <input class="form-control" type="url" placeholder="https://.../submission.tar.gz" id="q-termlog-ollama-modelfile-server" name="q-termlog-ollama-modelfile-server"><div class="valid-feedback mb-3 comment">Correct!</div>
+            <div class="invalid-feedback mb-3 comment">Incorrect. Try again.</div>
+    </div></div>
+          <div class="card-footer d-flex">
+            <button type="button" class="btn btn-primary check-answer" data-question="q-termlog-ollama-modelfile-server">Check</button>
+          <a class="btn btn-outline-secondary ms-2 discussion-link" href="https://github.com/sanand0/tools-in-data-science-public/discussions/540" target="_blank" rel="noopener">Discuss</a>
+<a class="btn btn-outline-secondary ms-auto ask-question" href="https://www.perplexity.ai/search?q=Write%20an%20ELI15%20step-by-step%20solution%20to%20this%20assignment%20question%20for%20a%20complete%20novice.%0A%0A---%0A%0A15%20Create%20a%20custom%20Ollama%20model%20(termlog)%20(2%20marks)%20Solved%20%0A%0ACreate%20a%20reusable%20local%20deployment%20assistant%20with%20an%20Ollama%20Modelfile.%20This%20exercise%20checks%20the%20saved%20model%20configuration%2C%20not%20whether%20an%20LLM%20happens%20to%20follow%20a%20prompt.%0A%0ABefore%20recording%2C%20install%20Ollama%20and%20download%20any%20small%20text-generation%20model%20your%20machine%20can%20run.%20Use%20it%20in%20your%20FROM%20instruction.%20Keep%20its%20default%20chat%20template.%0A%0AYour%20custom%20model%20name%3A%20%60ga2-assistant-d4658737%60.%20Configure%20these%20exact%20values%3A%0A%0A%7B%0A%20%20%22temperature%22%3A%200.3%2C%0A%20%20%22num_ctx%22%3A%204096%2C%0A%20%20%22seed%22%3A%20723%2C%0A%20%20%22num_predict%22%3A%20107%0A%7D%0A%0ASet%20this%20exact%20SYSTEM%20prompt%3A%0A%0AYou%20are%20the%20deployment%20assistant%20for%20project%20d4658737.%20Give%20concise%20answers%20and%20never%20invent%20commands.%0A%0A1.%20Install%20%5Btermlog%5D(https%3A%2F%2Fgithub.com%2Fmynkpdr%2Ftermlog)and%20log%20in%20with%20%60termlog%20login%60%20as%20**24f3003132%40ds.study.iitm.ac.in**.%0A2.%20Start%20%60termlog%20rec%20model.cast%60.%20Create%20your%20Modelfile%20inside%20the%20recording%2C%20using%20FROM%2C%20SYSTEM%20and%20PARAMETER%20instructions.%0A3.%20Run%20%60ollama%20create%20ga2-assistant-d4658737%20-f%20Modelfile%60%20and%20wait%20for%20success.%0A4.%20Run%20these%20commands%20individually.%20The%20markers%20must%20appear%20on%20their%20own%20output%20lines.%20Widen%20your%20terminal%20if%20it%20wraps%20output%3A%20%20%0Aprintf%20'%20%20%0AMODELFILE_BEGIN%20ga2-assistant-d4658737%20%20%0A'%20%20%0Aollama%20show%20--modelfile%20ga2-assistant-d4658737%20%20%0Aprintf%20'%20%20%0AMODELFILE_END%20ga2-assistant-d4658737%20%20%0A'%0A5.%20Type%20%60exit%60%20and%20package%20the%20files%3A%20%20%0Atar%20-czf%20submission.tar.gz%20model.cast%20model.cast.jwt%20%20%0AUpload%20the%20archive%20to%20a%20public%20URL%20serving%20the%20actual%20file.%0A%0AThe%20grader%20checks%20your%20signed%20recording%2C%20account%2C%20exit%20event%2C%20create%2Fshow%20commands%20and%20exported%20SYSTEM%20and%20parameter%20values.%20Each%20assigned%20parameter%20must%20appear%20once.%20Other%20inherited%20parameters%20are%20allowed.%20No%20public%20model%20endpoint%20is%20needed.%20Keep%20the%20archive%20under%201%20MB%20compressed%20and%205%20MB%20uncompressed%2C%20and%20avoid%20recording%20secrets.%0A%0A%5BOllama%20Modelfile%20reference%5D(https%3A%2F%2Fdocs.ollama.com%2Fmodelfile)%0A%0APublic%20URL%20of%20submission.tar.gz" target="_blank" rel="noopener" data-askai-text="Write an ELI15 step-by-step solution to this assignment question for a complete novice.
+
+---
+
+15 Create a custom Ollama model (termlog) (2 marks) Solved 
+
+Create a reusable local deployment assistant with an Ollama Modelfile. This exercise checks the saved model configuration, not whether an LLM happens to follow a prompt.
+
+Before recording, install Ollama and download any small text-generation model your machine can run. Use it in your FROM instruction. Keep its default chat template.
+
+Your custom model name: `ga2-assistant-d4658737`. Configure these exact values:
+
+{
+  &quot;temperature&quot;: 0.3,
+  &quot;num_ctx&quot;: 4096,
+  &quot;seed&quot;: 723,
+  &quot;num_predict&quot;: 107
+}
+
+Set this exact SYSTEM prompt:
+
+You are the deployment assistant for project d4658737. Give concise answers and never invent commands.
+
+1. Install [termlog](https://github.com/mynkpdr/termlog)and log in with `termlog login` as **24f3003132@ds.study.iitm.ac.in**.
+2. Start `termlog rec model.cast`. Create your Modelfile inside the recording, using FROM, SYSTEM and PARAMETER instructions.
+3. Run `ollama create ga2-assistant-d4658737 -f Modelfile` and wait for success.
+4. Run these commands individually. The markers must appear on their own output lines. Widen your terminal if it wraps output:  
+printf '  
+MODELFILE_BEGIN ga2-assistant-d4658737  
+'  
+ollama show --modelfile ga2-assistant-d4658737  
+printf '  
+MODELFILE_END ga2-assistant-d4658737  
+'
+5. Type `exit` and package the files:  
+tar -czf submission.tar.gz model.cast model.cast.jwt  
+Upload the archive to a public URL serving the actual file.
+
+The grader checks your signed recording, account, exit event, create/show commands and exported SYSTEM and parameter values. Each assigned parameter must appear once. Other inherited parameters are allowed. No public model endpoint is needed. Keep the archive under 1 MB compressed and 5 MB uncompressed, and avoid recording secrets.
+
+[Ollama Modelfile reference](https://docs.ollama.com/modelfile)
+
+Public URL of submission.tar.gz" data-askai="{&quot;href&quot;:&quot;#askai&quot;,&quot;text&quot;:&quot;Ask AI&quot;,&quot;target&quot;:&quot;_blank&quot;}"><i class="bi bi-magic"></i> Ask AI</a></div>
+        </details>
+      <!----></section>
+      <button type="submit" class="btn btn-success check-action" title="Check your score">Check all</button>
+      <button type="button" class="btn btn-primary save-action" title="Save your progress">Save</button>
+      <div id="submission-status" class="my-3" aria-live="polite"></div>
+      <p>Save rechecks your answers, including live servers. Your <em>last saved</em> score counts and may differ from Checked.</p>
+    </form>
+
+    <footer class="my-5 d-flex align-items-center justify-content-center" style="height: 50vh;">
+      <h1 class="display-4">Best of luck!</h1>
+    </footer>
+  </main>
+
+  <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3/dist/dark-theme.js" integrity="sha384-WWZYgp4BxSnWElq/A+SNJoNuJ5eZf6xBLqGUBHmu6QXN+9dqtz7bTtyuBwy9O7C+" crossorigin="anonymous"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script type="module">
+    import { setup } from './exam.js';
+    setup(window.location.pathname.slice(1));
+  </script>
+
+
+
+<protonpass-root-4289 data-protonpass-role="root" data-protonpass-theme="os"></protonpass-root-4289>
