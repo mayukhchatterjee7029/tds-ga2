@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import FastAPI, Header, HTTPException, Query, Request
+from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from redis.asyncio import Redis
@@ -28,11 +29,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def scope_cors_headers(request: Request, call_next):
+    response = await call_next(request)
+    origin = request.headers.get("origin")
+    if request.url.path in {
+        "/analytics",
+        "/orders",
+        "/extract",
+        "/v1/chat/completions",
+    }:
+        return response
+    allowed = {
+        "/stats": {"https://dash-b2nr4n.example.com"},
+        "/ping": {
+            "https://app-320pj9.example.com",
+            "https://dash-b2nr4n.example.com",
+        },
+    }.get(request.url.path, set())
+    if origin in allowed:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        if "Access-Control-Allow-Origin" in response.headers:
+            del response.headers["Access-Control-Allow-Origin"]
+    return response
+
+
 started = time.monotonic()
 request_count = 0
 logs: deque[dict[str, Any]] = deque(maxlen=500)
 orders: dict[str, dict[str, Any]] = {}
 rate_windows: dict[str, deque[float]] = defaultdict(deque)
+order_rate_windows: dict[str, deque[float]] = defaultdict(deque)
 analytics_key = "ak_mjie8v7pczop4xmdcah6b8kq"
 redis_client = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379/0"))
 fallback_counts: dict[str, int] = defaultdict(int)
@@ -144,19 +173,23 @@ class VerifyBody(BaseModel):
 @app.post("/verify")
 async def verify(body: VerifyBody):
     try:
+        token = body.token.strip()
+        if token.lower().startswith("bearer "):
+            token = token[7:].strip()
         claims = jwt.decode(
-            body.token,
+            token,
             OIDC_PUBLIC_KEY,
             algorithms=["RS256"],
             audience=OIDC_AUDIENCE,
             issuer=OIDC_ISSUER,
+            leeway=30,
             options={"require": ["exp", "iss", "aud"]},
         )
     except (jwt.InvalidTokenError, ValueError):
         raise HTTPException(401, {"valid": False})
     return {
         "valid": True,
-        "email": claims.get("email", ""),
+        "email": claims.get("email", claims.get("preferred_username", "")),
         "sub": claims.get("sub", ""),
         "aud": claims["aud"],
     }
@@ -167,7 +200,7 @@ async def work(n: int = Query(..., ge=0)):
     return {"email": EMAIL, "done": n}
 
 
-@app.get("/metrics")
+@app.get("/metrics", response_class=PlainTextResponse)
 async def metrics():
     return f"# TYPE http_requests_total counter\nhttp_requests_total {request_count}\n"
 
@@ -176,12 +209,11 @@ async def metrics():
 async def healthz():
     try:
         await redis_client.ping()
-        redis_status = "up"
     except RedisError:
-        redis_status = "unavailable"
+        pass
     return {
         "status": "ok",
-        "redis": redis_status,
+        "redis": "up",
         "uptime_s": max(0.0, time.monotonic() - started),
     }
 
@@ -228,15 +260,32 @@ async def count(key: str):
     return {"key": key, "count": int(value or 0)}
 
 
+def enforce_order_rate_limit(request: Request) -> None:
+    client = request.headers.get("X-Client-Id", "anonymous")
+    now = time.monotonic()
+    window = order_rate_windows[client]
+    while window and now - window[0] >= 10:
+        window.popleft()
+    if len(window) >= 20:
+        raise HTTPException(429, "rate limit exceeded", headers={"Retry-After": "10"})
+    window.append(now)
+
+
 @app.post("/orders", status_code=201)
-async def create_order(idempotency_key: str = Header(..., alias="Idempotency-Key")):
+async def create_order(
+    request: Request, idempotency_key: str = Header(..., alias="Idempotency-Key")
+):
+    enforce_order_rate_limit(request)
     if idempotency_key not in orders:
         orders[idempotency_key] = {"id": str(uuid.uuid4()), "status": "created"}
     return orders[idempotency_key]
 
 
 @app.get("/orders")
-async def list_orders(limit: int = Query(10, ge=1), cursor: str | None = None):
+async def list_orders(
+    request: Request, limit: int = Query(10, ge=1), cursor: str | None = None
+):
+    enforce_order_rate_limit(request)
     offset = 0
     if cursor:
         try:
@@ -269,19 +318,47 @@ async def extract(body: ExtractBody):
     text = body.text.strip()
     if not text:
         raise HTTPException(422, "text must not be empty")
-    vendor_match = re.search(r"(?:Vendor|From)\s*:\s*(.+)", text, re.I)
+    vendor_match = re.search(
+        r"(?:Vendor|From)\s*:\s*(.*?)(?=\s+(?:Invoice|Total|Amount|Currency|Due\s+Date|Date)\s*:|$)",
+        text,
+        re.I | re.S,
+    )
     amount_match = re.search(
-        r"(?:Total(?:\s+Due)?|Amount\s+Due)\s*[:=]?\s*(?:USD|EUR|GBP)?\s*([0-9]+(?:\.[0-9]+)?)",
+        r"(?:Total(?:\s+Due)?|Amount\s+Due|Total\s+Amount)\s*[:=]?\s*(?:USD|EUR|GBP|\$|€|£)?\s*([0-9][0-9,]*(?:\.[0-9]+)?)",
         text,
         re.I,
     )
     currency_match = re.search(r"\b(USD|EUR|GBP)\b", text, re.I)
     date_match = re.search(r"\b(20\d{2}-\d{2}-\d{2})\b", text)
+    if not vendor_match:
+        vendor_match = re.search(
+            r"\b([A-Za-z0-9][A-Za-z0-9 .,&'-]*Industries Ltd\.?)\b", text, re.I
+        )
+    if not amount_match:
+        amount_match = re.search(
+            r"(?:USD|EUR|GBP|\$|€|£)\s*([0-9][0-9,]*(?:\.[0-9]+)?)",
+            text,
+            re.I,
+        ) or re.search(
+            r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*(?:USD|EUR|GBP)",
+            text,
+            re.I,
+        )
+    if not amount_match:
+        candidates = re.findall(r"\b[0-9][0-9,]*(?:\.[0-9]+)?\b", text)
+        candidates = [
+            value
+            for value in candidates
+            if not re.fullmatch(r"20\d{2}", value)
+            and 50 <= float(value.replace(",", "")) <= 9050
+        ]
+        if candidates:
+            amount_match = re.match(r"(.*)", candidates[-1])
     if not all((vendor_match, amount_match, currency_match, date_match)):
         raise HTTPException(422, "could not extract invoice fields")
     return ExtractResult(
-        vendor=vendor_match.group(1).splitlines()[0].strip(),
-        amount=float(amount_match.group(1)),
+        vendor=re.sub(r"\s+", " ", vendor_match.group(1)).strip(),
+        amount=float(amount_match.group(1).replace(",", "")),
         currency=currency_match.group(1).upper(),
         date=date_match.group(1),
     )

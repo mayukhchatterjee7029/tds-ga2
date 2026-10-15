@@ -1,18 +1,29 @@
-# TDS GA2 Answers
+# TDS GA2 final answer record
 
-The account email used by the assignment is `24f3003132@ds.study.iitm.ac.in`.
+## Audit result
 
-## Final submission values
+All **15/15 numbered questions** in the previous version contained at least
+one instruction directed at the user (`run`, `deploy`, `upload`, `submit`,
+`create`, `start`, `pull`, or `serve`) instead of a completed result. This
+file replaces those handoffs with the work completed in this workspace and
+records the few results that cannot be generated without an unavailable
+third-party service or signing tool.
 
-The live service base URL currently running is:
+Account email: `24f3003132@ds.study.iitm.ac.in`
+
+## Live service
+
+The implemented FastAPI application is [app.py](./app.py). Its current public
+base URL is:
 
 ```text
 https://empathic-cake-juror.ngrok-free.dev
 ```
 
-Submit these values for the live HTTP questions:
+The URL is temporary because it is an ngrok process attached to this machine.
+The following endpoints were implemented and smoke-tested through that URL:
 
-| Question | Submission |
+| Question | Endpoint/value |
 |---|---|
 | Q3 | `https://empathic-cake-juror.ngrok-free.dev` |
 | Q4 | `https://empathic-cake-juror.ngrok-free.dev/verify` |
@@ -26,353 +37,147 @@ Submit these values for the live HTTP questions:
 | Q13 | `https://empathic-cake-juror.ngrok-free.dev/stream-answer` |
 | Q14 | `https://empathic-cake-juror.ngrok-free.dev/docker-answer` |
 
-The live URL is temporary and only remains valid while the local service and
-ngrok process remain running.
+Q7 CORS was tested with an OPTIONS preflight and authenticated POST; both
+returned `Access-Control-Allow-Origin: *`. Q4 invalid-token handling was
+tested and returned HTTP 401 with `{"detail":{"valid":false}}`.
 
-For Q7 specifically, the deployed endpoint is
-`https://empathic-cake-juror.ngrok-free.dev/analytics`. It accepts the assigned
-`X-API-Key` and now returns `Access-Control-Allow-Origin: *` for both OPTIONS
-preflight and authenticated POST requests. This was verified against the live
-public URL.
+## Answers
 
-Q6 is not claimed as complete: Docker and a Redis server are unavailable on
-this machine, and the fallback counter in `app.py` is deliberately not
-represented as Redis-backed completion. Q1 and Q15 require signed `termlog`
-recordings; `termlog` is not installed. Q2 requires the external AI Pipe
-evaluation and therefore has no honest precomputed result.
+### Q1 — HTTPBin recording
 
-## Locally implemented artifacts
+No signed answer archive exists. The required `termlog` executable is not
+installed in the environment, so a signed recording and receipt cannot be
+created or honestly fabricated. The question remains externally blocked.
 
-The reusable FastAPI implementation is in [app.py](./app.py), with its
-dependencies in [requirements.txt](./requirements.txt). It covers the
-`/stats`, `/effective-config`, `/analytics`, `/work`, `/metrics`, `/healthz`,
-`/logs/tail`, `/ping`, `/orders`, `/extract`, `/hit/{key}`, `/count/{key}`, and
-`/stream-answer` endpoints. The Compose/Redis setup is in
-[docker-compose.yml](./docker-compose.yml) and [Dockerfile](./Dockerfile).
-The exact raw JSON payloads for Questions 13 and 14 are in
-[stream_answers.json](./stream_answers.json) and
-[docker_answers.json](./docker_answers.json).
+### Q2 — model-intelligence evaluation
 
-The currently running public ngrok URL is:
+No verified answer exists. The question requires three external AI Pipe
+evaluations against the assigned model versions; no AI Pipe token or
+evaluation service is available in the environment. A guessed prompt is not
+represented as a graded result.
 
-```text
-https://empathic-cake-juror.ngrok-free.dev
-```
+### Q3 — CORS metrics API
 
-Useful live submission endpoints:
+Completed in [app.py](./app.py). `GET /stats` parses arbitrary integer batches,
+computes count/sum/min/max/mean, returns the assigned email, and adds request
+ID and process-time headers. The assigned origin
+`https://dash-b2nr4n.example.com` is allowed; other origins are excluded.
 
-```text
-Q3 /stats
-Q5 /effective-config
-Q7 /analytics
-Q8 /work, /metrics, /healthz, /logs/tail
-Q9 /v1/chat/completions   model: ga2-assistant-d4658737
-Q10 /extract
-Q11 /orders
-Q12 /ping
-Q13 https://empathic-cake-juror.ngrok-free.dev/stream-answer
-Q14 https://empathic-cake-juror.ngrok-free.dev/docker-answer
-```
+### Q4 — OAuth/OIDC verification
 
-The ngrok URL is tied to the currently running terminal session and may
-change if that process stops.
+Completed in [app.py](./app.py). `POST /verify` verifies RS256 signature,
+issuer `https://idp.exam.local`, audience
+`tds-wbk7ikg9.apps.exam.local`, and required expiry using the supplied public
+key. Invalid tokens return 401 and valid tokens return the required claims.
 
-## 1. HTTPBin terminal lab
+### Q5 — configuration precedence
 
-Run the following in one `termlog` recording after logging in:
-
-```bash
-termlog login 24f3003132@ds.study.iitm.ac.in
-termlog rec httpbin.cast
-
-capture() {
-  task="$1"
-  shift
-  printf '\nHTTPBIN_BEGIN http-d4658737 %s\n' "$task"
-  "$@"
-  printf '\nHTTPBIN_END http-d4658737 %s\n' "$task"
-}
-
-capture GET curl -sS 'https://httpbin.org/get?course=TDS&tag=http-d4658737' \
-  -H 'X-Exam-Tag: http-d4658737'
-capture POST curl -sS -X POST 'https://httpbin.org/post' \
-  -H 'Content-Type: application/json' \
-  --data '{"tag":"http-d4658737","quantity":12,"active":true}'
-capture FORM curl -sS -X PUT 'https://httpbin.org/put' \
-  --data-urlencode 'tag=http-d4658737' \
-  --data-urlencode 'quantity=12'
-capture AUTH curl -sS 'https://httpbin.org/bearer' \
-  -H 'Authorization: Bearer http-d4658737'
-capture REDIRECT curl -sS -L \
-  'https://httpbin.org/redirect-to?url=https%3A%2F%2Fhttpbin.org%2Fget%3Ftag%3Dhttp-d4658737'
-curl -sS -c cookies.txt \
-  'https://httpbin.org/cookies/set?exam=http-d4658737' >/dev/null
-capture COOKIES curl -sS -b cookies.txt 'https://httpbin.org/cookies'
-capture STATUS curl -sS -o /dev/null -w '%{http_code}' \
-  'https://httpbin.org/status/422'
-
-exit
-tar -czf submission.tar.gz httpbin.cast httpbin.cast.jwt
-```
-
-Upload `submission.tar.gz` to a public file URL and submit that URL.
-
-## 2. Model-intelligence prompt
-
-Candidate prompt (the evaluator must be run to verify the required nano/mini
-split):
-
-```text
-Answer only YES or NO, with no punctuation or explanation. Consider this exact rule: if a statement says “the answer to this statement is NO”, then the statement is true exactly when the answer is NO. Is the following statement true: “The answer to this statement is NO”?
-```
-
-## 3. CORS-aware metrics API
-
-Deploy a FastAPI `GET /stats` handler with:
-
-```python
-values = [int(x) for x in values_query.split(",")]
-result = {
-    "email": "24f3003132@ds.study.iitm.ac.in",
-    "count": len(values),
-    "sum": sum(values),
-    "min": min(values),
-    "max": max(values),
-    "mean": sum(values) / len(values),
-}
-```
-
-Use `CORSMiddleware` with the single allowed origin
-`https://dash-b2nr4n.example.com`, and an HTTP middleware that adds a fresh
-UUID `X-Request-ID` and non-negative elapsed-seconds `X-Process-Time` to every
-response. Submit the deployed base URL.
-
-## 4. OAuth/OIDC JWT verification
-
-Implement `POST /verify` using RS256 verification with the supplied public key,
-requiring:
-
-```text
-iss = https://idp.exam.local
-aud = tds-wbk7ikg9.apps.exam.local
-```
-
-Verify the signature, issuer, audience, and expiry. Return HTTP 200 and
-`{"valid":true,"email":<email>,"sub":<sub>,"aud":<aud>}` only after all checks
-pass. Return HTTP 401 with `{"valid":false}` for any malformed, expired,
-wrong-audience, wrong-issuer, or tampered token. Submit the deployed
-`/verify` URL.
-
-## 5. Twelve-factor configuration precedence
-
-Merge in this order:
-
-```text
-defaults -> config.development.yaml -> .env -> OS APP_* variables -> ?set=
-```
-
-For the assigned values, before query-string overrides, the effective internal
-configuration is:
+Completed result before query overrides:
 
 ```json
-{
-  "port": 8093,
-  "workers": 1,
-  "debug": true,
-  "log_level": "debug",
-  "api_key": "****"
-}
+{"port":8093,"workers":1,"debug":true,"log_level":"debug","api_key":"****"}
 ```
 
-`NUM_WORKERS` maps to `workers`; parse `port` and `workers` as integers and
-`debug` using `true/1/yes/on` (case-insensitive). Apply every `set` parameter
-last, then always replace the returned `api_key` with `"****"`. Submit the
-deployed `/effective-config` URL.
+`GET /effective-config?set=port=9000&set=debug=false` applies both overrides
+and keeps the API key masked.
 
-## 6. Compose + Redis
+### Q6 — Compose and Redis
 
-Use a Compose service named `redis` and have the API connect to host
-`redis`. Implement:
+[docker-compose.yml](./docker-compose.yml), [Dockerfile](./Dockerfile), and
+the Redis-backed code are present. Docker itself is not installed in this
+environment, so the Compose stack could not be started or exposed through a
+tunnel. This is the only deployment-dependent part of the implementation that
+was not runtime-verified.
 
-```python
-await redis.incr(key)                 # POST /hit/{key}
-value = await redis.get(key) or b"0"  # GET /count/{key}
-await redis.ping()                    # GET /healthz
-```
+### Q7 — analytics
 
-Return `{"key": key, "count": int(value)}` and
-`{"status": "ok", "redis": "up"}`. Expose the API through a public tunnel and
-submit its base URL.
-
-## 7. Analytics endpoint
-
-Require `X-API-Key: ak_mjie8v7pczop4xmdcah6b8kq`; otherwise return 401. For a
-valid request:
-
-```python
-positive = {}
-for event in events:
-    amount = float(event["amount"])
-    if amount > 0:
-        positive[event["user"]] = positive.get(event["user"], 0) + amount
-
-result = {
-    "email": "24f3003132@ds.study.iitm.ac.in",
-    "total_events": len(events),
-    "unique_users": len({event["user"] for event in events}),
-    "revenue": sum(positive.values()),
-    "top_user": max(positive, key=positive.get),
-}
-```
-
-Enable CORS and submit the deployed `/analytics` URL.
-
-## 8. Observability service
-
-Maintain a process-local Prometheus counter named
-`http_requests_total`, increment it in middleware for every request, and keep a
-bounded in-memory list of structured entries containing `level`, `ts`, `path`,
-and `request_id`. Implement:
+Completed at:
 
 ```text
-GET /work?n=K       -> {"email": "...", "done": K}
-GET /metrics       -> Prometheus text including http_requests_total
-GET /healthz       -> {"status": "ok", "uptime_s": elapsed_since_start}
-GET /logs/tail     -> last N structured entries
+https://empathic-cake-juror.ngrok-free.dev/analytics
 ```
 
-Submit the deployed base URL.
+It requires `X-API-Key: ak_mjie8v7pczop4xmdcah6b8kq`, computes all five required
+fields for fresh event batches, and permits wildcard CORS.
 
-## 9. Ollama tunnel
+### Q8 — observability
 
-Start an OpenAI-compatible Ollama endpoint with CORS enabled, for example:
+Completed at the live base URL. `/work`, `/metrics`, `/healthz`, and
+`/logs/tail` are implemented. The metrics response is Prometheus
+`text/plain`, the counter increments in middleware, and log entries contain
+`level`, `ts`, `path`, and `request_id`.
 
-```bash
-set OLLAMA_ORIGINS=*
-ollama serve
-cloudflared tunnel --url http://localhost:11434
+### Q9 — Ollama tunnel
+
+The assigned model was created successfully:
+
+```text
+ga2-assistant-d4658737
 ```
 
-Pull a locally available model and submit:
+The OpenAI-compatible route is:
+
+```text
+https://empathic-cake-juror.ngrok-free.dev/v1/chat/completions
+```
+
+It was tested with an echo request and returned the requested token.
+
+### Q10 — structured extraction
+
+Completed at:
+
+```text
+https://empathic-cake-juror.ngrok-free.dev/extract
+```
+
+The response model contains exactly `vendor`, `amount`, `currency`, and
+`date`; empty or malformed input returns 422.
+
+### Q11 — idempotency, pagination, rate limit
+
+Completed at the live base URL. The catalog is IDs 1–43, cursors are opaque
+base64 offsets, repeated idempotency keys return the same order ID, and each
+`X-Client-Id` receives 20 requests per ten-second window with `Retry-After`
+on HTTP 429.
+
+### Q12 — middleware stack
+
+Completed at the live base URL. `/ping` propagates or generates
+`X-Request-ID`, returns it in both the body and response header, applies the
+13-per-ten-second client bucket, and restricts CORS to the assigned origin
+and exam-page origin.
+
+### Q13 — fragmented stream exact answer
+
+The raw JSON is also stored in [stream_answers.json](./stream_answers.json):
 
 ```json
-{"url":"https://<tunnel>/v1/chat/completions","model":"<exact-pulled-model-name>"}
+{"A":{"text":"Report job-d4658737: café\nReady ✓","complete":true,"error":null},"B":{"text":"Partial job-d4658737","complete":false,"error":null},"C":{"text":"Draft job-d4658737","complete":false,"error":"model unloaded"}}
 ```
 
-The URL must be the full `/v1/chat/completions` path.
+### Q14 — Docker cache exact answer
 
-## 10. Structured invoice extraction
-
-Implement `POST /extract` with a Pydantic response model containing exactly
-`vendor`, `amount`, `currency`, and `date`. Extract using tolerant patterns:
-
-```text
-vendor: text after "Vendor:" / "From:" through the line
-amount: numeric value after "Total" / "Amount Due"
-currency: USD, EUR, or GBP
-date: YYYY-MM-DD after "Due Date" / "Date"
-```
-
-Return a 422 for empty or malformed input rather than allowing an HTTP 500.
-Submit the deployed `/extract` URL.
-
-## 11. Idempotency, pagination, and rate limiting
-
-Use:
-
-```text
-catalog IDs: 1..43
-rate limit: 20 requests per 10 seconds per X-Client-Id
-```
-
-Store an `Idempotency-Key` to created order in persistent process state and
-return the same order ID on repeats. Encode the pagination offset in an opaque
-cursor (for example, URL-safe base64 JSON), return at most `limit` items, and
-advance from 1 through 43 without gaps or duplicates. Rate-limit independently
-per client and return 429 plus `Retry-After` after the twentieth request.
-Submit the deployed base URL.
-
-## 12. Middleware stack
-
-Configure:
-
-```text
-allowed origin: https://app-320pj9.example.com
-bucket: 13 requests per 10 seconds per X-Client-Id
-```
-
-Request context must reuse inbound `X-Request-ID` or generate UUID4, and return
-it both in the JSON body and response header. Reject the 14th request in a
-window for one client with 429 while allowing another client. Configure CORS
-for the assigned origin and the exam page origin, never `*`. Submit the
-deployed base URL.
-
-## 13. Fragmented Ollama stream
-
-Serve this exact raw JSON:
+The raw JSON is also stored in [docker_answers.json](./docker_answers.json):
 
 ```json
-{
-  "A": {
-    "text": "Report job-d4658737: café\nReady ✓",
-    "complete": true,
-    "error": null
-  },
-  "B": {
-    "text": "Partial job-d4658737",
-    "complete": false,
-    "error": null
-  },
-  "C": {
-    "text": "Draft job-d4658737",
-    "complete": false,
-    "error": "model unloaded"
-  }
-}
+{"A":{"steps":["L3","L4","L5"],"seconds":41},"B":{"steps":["L1","L2","L3","L4","L5"],"seconds":98},"C":{"steps":[],"seconds":0},"D":{"steps":[],"seconds":0},"E":{"steps":["L4","L5"],"seconds":41}}
 ```
 
-## 14. Docker cache diagnosis
+### Q15 — custom Ollama model
 
-Serve this exact JSON:
+The model itself was created successfully with the assigned system prompt and
+parameters. The required signed `termlog` archive cannot be produced because
+`termlog` is not installed. The exact model definition is in
+[Modelfile](./Modelfile), and its exported configuration was verified with
+`ollama show --modelfile`.
 
-```json
-{
-  "A": {"steps": ["L3", "L4", "L5"], "seconds": 41},
-  "B": {"steps": ["L1", "L2", "L3", "L4", "L5"], "seconds": 98},
-  "C": {"steps": [], "seconds": 0},
-  "D": {"steps": [], "seconds": 0},
-  "E": {"steps": ["L4", "L5"], "seconds": 41}
-}
-```
+## Supporting files
 
-Reasoning: source-content changes invalidate the `COPY src` layer and later
-layers; requirements changes invalidate `COPY requirements` and every later
-layer; changing only source mtime does not invalidate Docker's content-based
-cache; an excluded README is not in the build context; changing the L4
-instruction invalidates L4 and L5.
-
-## 15. Custom Ollama model
-
-Create `Modelfile` with:
-
-```text
-FROM <small-downloaded-model>
-SYSTEM You are the deployment assistant for project d4658737. Give concise answers and never invent commands.
-PARAMETER temperature 0.3
-PARAMETER num_ctx 4096
-PARAMETER seed 723
-PARAMETER num_predict 107
-```
-
-Then record:
-
-```bash
-ollama create ga2-assistant-d4658737 -f Modelfile
-printf 'MODELFILE_BEGIN ga2-assistant-d4658737\n'
-ollama show --modelfile ga2-assistant-d4658737
-printf 'MODELFILE_END ga2-assistant-d4658737\n'
-exit
-tar -czf submission.tar.gz model.cast model.cast.jwt
-```
-
-Upload the resulting archive and submit its public URL.
+- [app.py](./app.py)
+- [requirements.txt](./requirements.txt)
+- [Dockerfile](./Dockerfile)
+- [docker-compose.yml](./docker-compose.yml)
+- [Modelfile](./Modelfile)
+- [stream_answers.json](./stream_answers.json)
+- [docker_answers.json](./docker_answers.json)
